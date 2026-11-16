@@ -15,7 +15,7 @@ Pin colours show the six dimensions of the assignment (histories, geographies, i
 
 ## How it works
 
-The site opens on a spinning globe. **Begin the story** and the left panel becomes a storyteller: it starts with the kei car I photographed, then walks outwards place by place through four chapters (Hirakata → Kansai → Japan → World) and ends with the relations of relations and the two themes. Use **Next / Back** or the arrow keys; the scale tabs jump to a chapter. Click any pin and the story jumps there, so you can explore freely and keep reading from that point. Each step has its own link (`#step-12`).
+The site opens on a spinning globe. **Begin the story** and the left panel becomes a storyteller: it starts with the kei car I photographed, then walks outwards place by place through four chapters (Hirakata → Kansai → Japan → World) and ends with the relations of relations, the two themes, and a flight all the way back to the crosswalk where the photo was taken. Use **Next / Back** or the arrow keys; the scale tabs jump to a chapter. Click any pin and the story jumps there, so you can explore freely and keep reading from that point. Each step has its own link (`#step-12`).
 
 ## How to use it
 

@@ -142,6 +142,11 @@ window.KEI = {
       japan: ['kasumigaseki', 'kosai', 'ota', 'nakatsu', 'mizushima', 'mishima', 'shimukappu', 'shimane'],
       world: ['gulf', 'gurugram', 'jakarta', 'shenzhen', 'malaysia', 'maine', 'massachusetts', 'rhodeisland', 'texas', 'fordlandia', 'atacama', 'greenbushes', 'sulawesi', 'kolwezi', 'norway']
     },
+    closing: {
+      title: 'The same car, seen again',
+      text: 'We are back at the crosswalk where it started. Nothing about the car has changed: it is still small, square and white, waiting for the light. What has changed is how much it holds.',
+      coda: 'A 1949 law, a city tax, a factory across the river, a safety scandal, shrinking villages, closing gas stations, India’s people’s car, American state laws, and mines on three continents all pass through this one parked car. That is what Tsing means by relations of relations: the object only makes sense inside the web that runs through it.'
+    },
     outro: {
       title: 'Relations of relations',
       rhythms: [['Every minute', 'A car leaves the factory line'], ['Every day', 'Commutes, school runs, shopping'], ['Every season', 'Rice planting and harvest, kei trucks in the fields'],

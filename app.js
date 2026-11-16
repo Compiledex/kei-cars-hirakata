@@ -15,6 +15,7 @@ ORDER.forEach(v => {
   D.story.order[v].forEach(id => STEPS.push({ type: 'place', view: v, id }));
 });
 STEPS.push({ type: 'outro', view: 'world' });
+STEPS.push({ type: 'return', view: 'hirakata' });
 const stepOfPlace = Object.fromEntries(STEPS.map((s, i) => [s.id, i]).filter(([k]) => k));
 const stepOfScale = Object.fromEntries(STEPS.map((s, i) => [s.type === 'scale' ? s.view : null, i]).filter(([k]) => k));
 let step = -1, scale = null;
@@ -186,9 +187,48 @@ function lineOpacity(dimmed) {
   map.setPaintProperty('conn', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.95, 0.06] : (k === 'NONE' ? 0 : base));
   map.setPaintProperty('conn-glow', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.35, 0.02] : (k === 'NONE' ? 0 : gbase));
 }
+// The path back to the car is drawn on gradually, from the car outwards.
+let drawRaf = null;
 function showPath(id) {
-  map.getSource('path').setData(id && id !== 'car' ? pathLines(id) : fc([]));
+  cancelAnimationFrame(drawRaf);
   lineOpacity(!!id);
+  if (!id || id === 'car') { map.getSource('path').setData(fc([])); return; }
+  const ids = PATH[id] || [], segs = [];
+  for (let i = 0; i < ids.length - 1; i++) segs.push(arc(P[ids[i]].coord, P[ids[i + 1]].coord));
+  const total = segs.length, dur = 900 + total * 500, t0 = performance.now() + 500;
+  const tick = now => {
+    const k = Math.max(0, Math.min(1, (now - t0) / dur)), e = 1 - Math.pow(1 - k, 3);
+    const upto = e * total, f = [];
+    segs.forEach((s, i) => {
+      if (upto <= i) return;
+      const part = Math.min(1, upto - i), n = Math.max(2, Math.ceil(part * (s.length - 1)) + 1);
+      f.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: s.slice(0, n) } });
+    });
+    map.getSource('path').setData(fc(f));
+    if (k < 1) drawRaf = requestAnimationFrame(tick);
+  };
+  drawRaf = requestAnimationFrame(tick);
+}
+
+// Evening in Hirakata, lighter as we zoom out (the photo was taken at 18:52).
+const MOOD = { hirakata: { b: 0.66, s: -0.28, tint: 1 }, kansai: { b: 0.78, s: -0.18, tint: 0.55 }, japan: { b: 0.9, s: -0.1, tint: 0.2 }, world: { b: 0.96, s: -0.04, tint: 0 } };
+function setMood(v) {
+  const m = MOOD[v] || MOOD.world;
+  map.setPaintProperty('sat', 'raster-brightness-max', m.b);
+  map.setPaintProperty('sat', 'raster-saturation', m.s);
+  $('tint').style.opacity = m.tint;
+}
+function setScaleStrip(v) {
+  const i = ORDER.indexOf(v);
+  document.querySelectorAll('#scalestrip li').forEach((li, j) => { li.classList.toggle('on', j === i); li.classList.toggle('past', j < i); });
+  $('scalestrip').style.setProperty('--pos', i);
+}
+// A short full-screen moment between chapters, so the change of scale is felt.
+function chapterCard(v) {
+  const i = ORDER.indexOf(v), V = D.views[v], [head, sub] = V.title.split(':');
+  const el = $('chapcard');
+  el.innerHTML = `<div class="cc-num">0${i + 1} <span>/ 04</span></div><div class="cc-title">${head}<span class="jp">${V.jp}</span></div><div class="cc-sub">${(sub || '').trim()}</div>`;
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
 }
 
 const fmt = ([lon, lat]) => `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}  ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? 'E' : 'W'}`;
@@ -196,24 +236,43 @@ const fmt = ([lon, lat]) => `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S
 /* ---------- story navigation ---------- */
 function begin(i) {
   spinning = false; map.stop();
-  document.body.classList.add('story');
   $('intro').classList.add('gone');
+  if (i === 0) return dive();
+  document.body.classList.add('story');
+  map.setPadding({ left: 0, top: 0, right: 0, bottom: 0 });
   go(i == null ? 1 : i, true);
 }
-function go(i, fromGlobe) {
+// The opening dive: one continuous camera move from the globe down to the crosswalk, before the panel slides in.
+function dive() {
+  const c = P.car.coord;
+  setMood('hirakata'); setScaleStrip('hirakata');
+  map.setPadding({ left: 0, top: 0, right: 0, bottom: 0 });
+  setPins(null, 'car'); scale = 'hirakata';
+  document.body.classList.add('diving');
+  map.flyTo({ center: c, zoom: mobile() ? 15.5 : 16.6, pitch: 40, bearing: -20, duration: 7500, curve: 1.8, essential: true });
+  map.once('moveend', () => {
+    document.body.classList.remove('diving');
+    document.body.classList.add('story');
+    go(0, false, true);
+  });
+}
+function go(i, fromGlobe, afterDive) {
   i = Math.max(0, Math.min(STEPS.length - 1, i));
   const s = STEPS[i], prevScale = scale;
   step = i; scale = s.view;
   const long = fromGlobe || prevScale !== s.view;
+  if (s.type === 'scale' && !afterDive && (prevScale !== s.view || fromGlobe)) chapterCard(s.view);
+  setMood(s.view); setScaleStrip(s.view);
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === scale)));
   $('progress').style.width = ((i + 1) / STEPS.length * 100) + '%';
   $('count').textContent = `${String(i + 1).padStart(2, '0')} / ${STEPS.length}`;
   $('prev').disabled = i === 0;
-  $('next').innerHTML = i === STEPS.length - 1 ? 'Start again' : 'Next <span aria-hidden="true">→</span>';
+  $('next').innerHTML = i === STEPS.length - 1 ? 'Start again' : i === STEPS.length - 2 ? 'Back to the car <span aria-hidden="true">→</span>' : 'Next <span aria-hidden="true">→</span>';
   try { history.replaceState(null, '', '#step-' + (i + 1)); } catch (e) {}
   if (s.type === 'scale') renderScale(s.view, long);
   else if (s.type === 'place') renderPlace(s.id, long);
-  else renderOutro(long);
+  else if (s.type === 'outro') renderOutro(long);
+  else renderReturn();
   $('story').scrollTop = 0;
 }
 function stepFromHash() { const m = location.hash.match(/^#step-(\d+)$/); return m ? +m[1] - 1 : null; }
@@ -278,6 +337,18 @@ function renderOutro(long) {
   bind();
   setPins(null, null); showPath(null);
   fly({ center: [150, 18], zoom: mobile() ? 0.9 : 1.8, pitch: 0, bearing: 0, duration: long ? 3600 : 2000, curve: 1.4 }, true);
+}
+
+function renderReturn() {
+  const C = D.story.closing;
+  $('story').innerHTML = `<div class="chapter">Back where it started · 枚方</div>
+    <figure class="hero tall"><img class="own" src="assets/kei.jpg" alt="The kei car I photographed in Hirakata: a white Honda N-BOX at a crosswalk"><figcaption>Photo: my fieldwork, Hirakata · 18:52</figcaption></figure>
+    <h2 class="big">${C.title}</h2>
+    <p class="lead">${C.text}</p>
+    <p class="body">${C.coda}</p>`;
+  bind();
+  setPins(new Set(['car']), 'car'); showPath(null);
+  fly({ center: P.car.coord, zoom: mobile() ? 15.5 : 16.8, pitch: 40, bearing: -20, duration: 9000, curve: 1.8 });
 }
 
 function bind() {

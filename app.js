@@ -244,17 +244,14 @@ function begin(i) {
 }
 // The opening dive: one continuous camera move from the globe down to the crosswalk, before the panel slides in.
 function dive() {
-  const c = P.car.coord;
+  // Land exactly on the chapter 1 view (with room for the panel), so there is no second zoom afterwards.
   setMood('hirakata'); setScaleStrip('hirakata');
-  map.setPadding({ left: 0, top: 0, right: 0, bottom: 0 });
-  setPins(null, 'car'); scale = 'hirakata';
+  setPins(null, null); scale = 'hirakata';
   document.body.classList.add('diving');
-  map.flyTo({ center: c, zoom: mobile() ? 15.5 : 16.6, pitch: 40, bearing: -20, duration: 7500, curve: 1.8, essential: true });
-  map.once('moveend', () => {
-    document.body.classList.remove('diving');
-    document.body.classList.add('story');
-    go(0, false, true);
-  });
+  const dur = 7000;
+  map.flyTo({ ...camFor('hirakata'), padding: pad(), duration: dur, curve: 1.7, essential: true });
+  // The panel slides in while the camera settles.
+  setTimeout(() => { document.body.classList.remove('diving'); document.body.classList.add('story'); go(0, false, true); }, dur - 1400);
 }
 function go(i, fromGlobe, afterDive) {
   i = Math.max(0, Math.min(STEPS.length - 1, i));
@@ -269,7 +266,7 @@ function go(i, fromGlobe, afterDive) {
   $('prev').disabled = i === 0;
   $('next').innerHTML = i === STEPS.length - 1 ? 'Start again' : i === STEPS.length - 2 ? 'Back to the car <span aria-hidden="true">→</span>' : 'Next <span aria-hidden="true">→</span>';
   try { history.replaceState(null, '', '#step-' + (i + 1)); } catch (e) {}
-  if (s.type === 'scale') renderScale(s.view, long);
+  if (s.type === 'scale') renderScale(s.view, long, afterDive);
   else if (s.type === 'place') renderPlace(s.id, long);
   else if (s.type === 'outro') renderOutro(long);
   else renderReturn();
@@ -277,7 +274,7 @@ function go(i, fromGlobe, afterDive) {
 }
 function stepFromHash() { const m = location.hash.match(/^#step-(\d+)$/); return m ? +m[1] - 1 : null; }
 
-function renderScale(v, long) {
+function renderScale(v, long, skipFly) {
   const V = D.views[v], i = ORDER.indexOf(v), [head, sub] = V.title.split(':');
   const here = D.story.order[v];
   $('story').innerHTML = `<div class="chapter">Chapter ${i + 1} of 4 · ${i === 0 ? 'Start with the object' : 'Zooming out'}</div>
@@ -289,7 +286,7 @@ function renderScale(v, long) {
       <em>${P[id].car ? 'The object' : D.dims[P[id].dim].name}</em></button></li>`).join('')}</ol>`;
   bind();
   setPins(null, null); showPath(null);
-  fly({ ...camFor(v), duration: long ? 3600 : 1800, curve: 1.5 }, long);
+  if (!skipFly) fly({ ...camFor(v), duration: long ? 3600 : 1800, curve: 1.5 }, long);
 }
 
 function renderPlace(id, long) {

@@ -270,3 +270,8 @@ ol.toc em{margin-left:auto;font-style:normal;font-size:12px;font-weight:600;colo
 }
 #intro p.intro-text{font-family:Inter,system-ui,sans-serif;font-style:normal;font-size:16px;line-height:1.65;color:#e6e9ee;margin:18px auto 26px;max-width:540px;background:rgba(6,9,15,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.1);text-shadow:none}
 #intro h1{text-shadow:0 4px 40px rgba(0,0,0,.7)}
+/* opening screen: no map controls; attribution folds into the small (i) button */
+body:not(.story) .maplibregl-ctrl-group{opacity:0;pointer-events:none}
+body:not(.story) .maplibregl-ctrl-attrib{background:transparent!important}
+body:not(.story) .maplibregl-ctrl-attrib-inner{display:none}
+.maplibregl-ctrl-group{transition:opacity .8s ease .3s}

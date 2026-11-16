@@ -27,7 +27,7 @@ const style = {
   },
   terrain: { source: 'dem', exaggeration: 1.6 },
   layers: [
-    { id: 'bg', type: 'background', paint: { 'background-color': '#04060b' } },
+    { id: 'bg', type: 'background', paint: { 'background-color': '#16211f' } },
     { id: 'sat', type: 'raster', source: 'sat',
       paint: { 'raster-saturation': -0.12, 'raster-contrast': 0.08, 'raster-brightness-max': 0.92, 'raster-fade-duration': 400 } },
     { id: 'buildings', type: 'fill-extrusion', source: 'omt', 'source-layer': 'building', minzoom: 13.5,
@@ -52,7 +52,7 @@ const style = {
   ]
 };
 const map = window._map = new maplibregl.Map({
-  container: 'map', style, center: [150, 20], zoom: 1.1, maxPitch: 60,
+  container: 'map', style, center: D.views.hirakata.camera.center, zoom: D.views.hirakata.camera.zoom, pitch: D.views.hirakata.camera.pitch, maxPitch: 60,
   attributionControl: { compact: true }
 });
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
@@ -78,6 +78,29 @@ function arc(A, B, n = 80) {
   const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1, bow = L * 0.14;
   return pts.map(([x, y], i) => { const s = Math.sin(Math.PI * i / n) * bow; return [x - dy / L * s, y + dx / L * s]; });
 }
+/* ---------- the car as hub: graph of relations ---------- */
+const EDGES = [];
+Object.values(D.threads).forEach(t => { for (let i = 0; i < t.chain.length - 1; i++) EDGES.push([t.chain[i], t.chain[i + 1]]); });
+// first-order relations: every street-scale place links straight to the car
+D.places.filter(p => p.view === 'hirakata' && !p.car).forEach(p => EDGES.push(['car', p.id, 'spoke']));
+// the car I photographed is an N-BOX, built at Honda Suzuka
+EDGES.push(['car', 'suzuka', 'spoke']);
+const ADJ = {};
+EDGES.forEach(([a, b]) => { (ADJ[a] = ADJ[a] || new Set()).add(b); (ADJ[b] = ADJ[b] || new Set()).add(a); });
+const PATH = { car: ['car'] };
+(function bfs() {
+  const q = ['car'];
+  while (q.length) { const x = q.shift(); (ADJ[x] || []).forEach(y => { if (!PATH[y]) { PATH[y] = [...PATH[x], y]; q.push(y); } }); }
+})();
+const steps = id => (PATH[id] ? PATH[id].length - 1 : null);
+function pathLines(id) {
+  const ids = PATH[id] || [];
+  const f = [];
+  for (let i = 0; i < ids.length - 1; i++)
+    f.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: arc(P[ids[i]].coord, P[ids[i + 1]].coord) } });
+  return { type: 'FeatureCollection', features: f };
+}
+
 function lines() {
   const f = [];
   Object.entries(D.threads).forEach(([k, t]) => {
@@ -85,6 +108,8 @@ function lines() {
       f.push({ type: 'Feature', properties: { thread: k },
         geometry: { type: 'LineString', coordinates: arc(P[t.chain[i]].coord, P[t.chain[i + 1]].coord) } });
   });
+  EDGES.filter(e => e[2] === 'spoke').forEach(([a, b]) =>
+    f.push({ type: 'Feature', properties: { thread: 'SPOKE' }, geometry: { type: 'LineString', coordinates: arc(P[a].coord, P[b].coord, 30) } }));
   return { type: 'FeatureCollection', features: f };
 }
 
@@ -100,9 +125,21 @@ map.on('load', () => {
   map.addLayer({ id: 'conn', type: 'line', source: 'conn', layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': '#ffe39a', 'line-opacity': 0.9,
       'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.2, 10, 2.4] } });
+  map.addSource('path', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+  map.addLayer({ id: 'path-glow', type: 'line', source: 'path', layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#ffffff', 'line-blur': 6, 'line-opacity': 0.55, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 8, 10, 14] } });
+  map.addLayer({ id: 'path', type: 'line', source: 'path', layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.5, 10, 4] } });
   addPins();
-  setView(viewFromHash() || 'hirakata', 6500);
-  setTimeout(() => $('intro').classList.add('gone'), 3800);
+  loadWikiImages();
+  // Load the first scale behind the title card, then reveal it (no black frames while flying in).
+  const first = viewFromHash() || 'hirakata';
+  setView(first, 0);
+  let revealed = false;
+  const reveal = () => { if (revealed) return; revealed = true; $('intro').classList.add('gone');
+    map.easeTo({ bearing: map.getBearing() + 12, duration: 6000, easing: t => t }); };
+  map.once('idle', () => setTimeout(reveal, 600));
+  setTimeout(reveal, 9000);
 });
 
 /* ---------- pins ---------- */
@@ -123,7 +160,7 @@ function addPins() {
 }
 
 /* ---------- views ---------- */
-function setView(v, duration = 3200) {
+function setView(v, duration = 3200, fly = true) {
   current = v;
   const V = D.views[v];
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === v)));
@@ -136,31 +173,59 @@ function setView(v, duration = 3200) {
     <h2>${head}<span class="jp">${V.jp}</span></h2>
     <div class="sub">${(sub || '').trim()}</div>
     <p>${V.intro}</p>
+    ${v === 'hirakata' ? `<button class="object" id="objectCard"><img src="assets/kei.jpg" alt="The kei car I photographed in Hirakata: a white Honda N-BOX at a crosswalk" onerror="this.parentNode.remove()"><span><small>My object</small>The kei car in Hirakata →</span></button>` : ''}
+    <div class="hub"><span class="mini">軽</span><span>Everything links back to <b>the kei car</b>. Click any place to see its path to the car; the number shows how many steps away it is.</span></div>
     <ul class="places">${here.map(p => `<li><button data-place="${p.id}" style="--c:${D.dims[p.dim].color}"><i></i>
-      <span><b>${p.name}</b><small>${p.jp}${p.anchor ? ' · representative place' : ''}</small></span></button></li>`).join('')}</ul>
+      <span><b>${p.name}</b><small>${p.jp}${p.anchor ? ' · representative place' : ''}</small></span>
+      <em class="steps" title="Steps from the kei car">${p.car ? '軽' : steps(p.id)}</em></button></li>`).join('')}</ul>
     <button class="next" id="nextScale">${next ? `Zoom out to ${D.views[next].tab} <span aria-hidden="true">→</span>` : 'Back to Hirakata <span aria-hidden="true">↺</span>'}</button>`;
-  $('side').querySelectorAll('[data-place]').forEach(b => b.onclick = () => openPlace(b.dataset.place, true));
+  $('side').querySelectorAll('[data-place]').forEach(b => b.onclick = () => openPlace(b.dataset.place));
   $('nextScale').onclick = () => setView(next || 'hirakata');
+  if ($('objectCard')) $('objectCard').onclick = () => openPlace('car');
   $('side').scrollTop = 0;
   try { history.replaceState(null, '', '#' + v); } catch (e) {}
+  if (!fly) return;
   const cam = { ...V.camera };
   if (mobile()) cam.zoom = V.mobileZoom;
-  map.flyTo({ ...cam, duration, curve: 1.6, essential: true,
-    padding: mobile() ? { top: 0, bottom: innerHeight * 0.35, left: 0, right: 0 } : { left: 420, top: 40, right: 0, bottom: 0 } });
-  settleAfterMove();
+  const pad = mobile() ? { top: 0, bottom: innerHeight * 0.35, left: 0, right: 0 } : { left: 420, top: 40, right: 0, bottom: 0 };
+  if (!duration) { map.jumpTo({ ...cam, padding: pad }); return; }
+  flight({ ...cam, duration, curve: 1.6, essential: true, padding: pad });
 }
 // After a long flight with 3D terrain, nudge the camera once so terrain tiles refresh.
+const TERRAIN = { source: 'dem', exaggeration: 1.6 };
 function settleAfterMove() {
-  map.once('moveend', () => setTimeout(() => { map.jumpTo({ bearing: map.getBearing() + 0.01 }); map.triggerRepaint(); }, 250));
+  map.once('moveend', () => setTimeout(() => { map.setTerrain(TERRAIN); map.jumpTo({ bearing: map.getBearing() + 0.01 }); map.triggerRepaint(); }, 150));
 }
+// Long flights across zoom levels load far fewer tiles with terrain switched off; it comes back when the camera lands.
+function flight(opts) { map.setTerrain(null); map.flyTo(opts); settleAfterMove(); }
 function viewFromHash() { const h = location.hash.slice(1); return ORDER.includes(h) ? h : null; }
 
 /* ---------- place popup ---------- */
-const popup = new maplibregl.Popup({ maxWidth: '380px', offset: 20, closeButton: true, focusAfterOpen: false, className: 'glass-pop' });
-function openPlace(id, pan) {
+// Desktop: the card opens to the LEFT of the pin, with a pointer to it.
+// Mobile: the card opens above the pin.
+const POP_W = 380;
+const popup = new maplibregl.Popup({ maxWidth: POP_W + 'px', offset: 16, closeButton: true, focusAfterOpen: false,
+  className: 'glass-pop', anchor: 'right' });
+function focusPadding() {
+  // Leave room for the side panel plus the card, so the pin lands just right of where the card sits.
+  return mobile()
+    ? { top: 60, bottom: innerHeight * 0.45, left: 20, right: 20 }
+    : { left: 420 + POP_W + 40, right: 60, top: 80, bottom: 40 };
+}
+function openPlace(id) {
   const p = P[id], dim = D.dims[p.dim];
-  if (p.view !== current) setView(p.view, 2400);
-  else if (pan) map.easeTo({ center: p.coord, duration: 900 });
+  popup.remove();
+  const switching = p.view !== current;
+  if (switching) setView(p.view, 0, false);
+  const V = D.views[p.view];
+  const target = switching
+    ? { center: p.coord, zoom: mobile() ? V.mobileZoom : V.camera.zoom, pitch: V.camera.pitch, bearing: V.camera.bearing }
+    : { center: p.coord };
+  map.stop();
+  if (switching) flight({ ...target, padding: focusPadding(), duration: 2600, essential: true });
+  else map.easeTo({ ...target, padding: focusPadding(), duration: 900, essential: true });
+  showPath(id);
+
   let rel = '';
   Object.entries(D.threads).forEach(([k, t]) => {
     const i = t.chain.indexOf(id); if (i < 0) return;
@@ -169,22 +234,110 @@ function openPlace(id, pan) {
     if (i < t.chain.length - 1) nb.push(t.chain[i + 1]);
     rel += `<div class="rel"><span>${t.name}</span>${nb.map(n => `<button data-go="${n}" style="--c:${D.dims[P[n].dim].color}">${P[n].name}</button>`).join('')}</div>`;
   });
-  const photo = p.car ? 'assets/kei.jpg' : `assets/photos/${p.id}.jpg`;
   const html = `<div class="pop" style="--c:${dim.color}">
+    <figure class="hero" data-hero="${id}"><div class="shimmer"></div></figure>
     <div class="tag">${dim.name}</div>
     <h3>${p.name}</h3><div class="jp">${p.jp}</div>
-    <img src="${photo}" alt="Photo: ${p.name}" onerror="this.remove()">
     <p>${p.text}</p>
     ${p.anchor ? '<p class="note">Representative place: this relation is not tied to one exact spot.</p>' : ''}
-    ${rel ? `<div class="relh">Connected to</div>${rel}` : ''}
+    ${pathHtml(id)}
+    ${rel ? `<div class="relh">Also connected to</div>${rel}` : ''}
     <button class="zoom" data-zoom="${id}">See it from above</button></div>`;
-  setTimeout(() => {
+
+  const show = () => {
+    popup.options.anchor = mobile() ? 'bottom' : 'right';
     popup.setLngLat(p.coord).setHTML(html).addTo(map);
     const el = popup.getElement();
-    el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => openPlace(b.dataset.go, true));
-    el.querySelector('[data-zoom]').onclick = () => { map.flyTo({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.2, pitch: 58,
-      bearing: map.getBearing(), duration: 2800, essential: true }); settleAfterMove(); };
-  }, p.view !== current ? 2500 : 0);
+    el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => openPlace(b.dataset.go));
+    el.querySelector('[data-zoom]').onclick = () => flight({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.2, pitch: 58,
+      bearing: map.getBearing(), padding: focusPadding(), duration: 2800, essential: true });
+    Object.entries(pins).forEach(([pid, m]) => m.getElement().classList.toggle('sel', pid === id));
+    loadPhoto(id, el.querySelector('[data-hero]'));
+  };
+  if (switching) map.once('moveend', show); else show();
+}
+popup.on('close', () => { Object.values(pins).forEach(m => m.getElement().classList.remove('sel')); clearPath(); });
+
+function pathHtml(id) {
+  if (id === 'car') {
+    const first = [...(ADJ.car || [])];
+    return `<div class="relh">Start here</div><p class="pathnote">This is the object. Every pin on the map links back to the kei car, first through the street around it, then through the region, the nation and the world.</p>
+      <div class="rel">${first.map(n => `<button data-go="${n}" style="--c:${D.dims[P[n].dim].color}">${P[n].name}</button>`).join('')}</div>`;
+  }
+  const ids = PATH[id]; if (!ids) return '';
+  return `<div class="relh">How it connects to the kei car · ${ids.length - 1} step${ids.length > 2 ? 's' : ''}</div>
+    <ol class="path">${ids.map((n, i) => `<li><button data-go="${n}" style="--c:${n === 'car' ? '#f5c518' : D.dims[P[n].dim].color}" ${n === id ? 'aria-current="true"' : ''}>
+      ${n === 'car' ? '<span class="mini">軽</span>' : ''}${P[n].name}<small>${D.views[P[n].view].tab}</small></button></li>`).join('')}</ol>`;
+}
+let threadFocus = 'ALL';
+function applyThreadFilter() {
+  const k = threadFocus, t = D.threads[k];
+  map.setPaintProperty('conn', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 1, 0.08] : (k === 'NONE' ? 0 : 0.9));
+  map.setPaintProperty('conn-glow', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.7, 0.03] : (k === 'NONE' ? 0 : 0.35));
+}
+function showPath(id) {
+  const src = map.getSource('path'); if (!src) return;
+  src.setData(id === 'car' ? { type: 'FeatureCollection', features: [] } : pathLines(id));
+  const on = new Set(id === 'car' ? ['car', ...(ADJ.car || [])] : (PATH[id] || []));
+  Object.entries(pins).forEach(([pid, m]) => m.getElement().classList.toggle('dim', !on.has(pid)));
+  map.setPaintProperty('conn', 'line-opacity', 0.18);
+  map.setPaintProperty('conn-glow', 'line-opacity', 0.05);
+}
+function clearPath() {
+  const src = map.getSource('path'); if (src) src.setData({ type: 'FeatureCollection', features: [] });
+  Object.values(pins).forEach(m => m.getElement().classList.remove('dim'));
+  applyThreadFilter();
+}
+
+
+/* ---------- card photos ---------- */
+// 1) your own photo in assets/ if it exists, 2) otherwise the lead photo of a Wikipedia article (Wikimedia Commons).
+const photoCache = {};
+function tryImage(src) { return new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(src); i.onerror = no; i.src = src; }); }
+// One batched request to Wikipedia for every article's lead image (960px is a standard Wikimedia thumbnail size).
+let wikiImages = null;
+function loadWikiImages() {
+  if (wikiImages) return wikiImages;
+  const titles = [...new Set(Object.values(D.photos).flat())];
+  const batches = [];
+  for (let i = 0; i < titles.length; i += 45) batches.push(titles.slice(i, i + 45));
+  wikiImages = Promise.all(batches.map(async list => {
+    const url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages|info&inprop=url'
+      + '&piprop=thumbnail&pithumbsize=960&titles=' + encodeURIComponent(list.join('|'));
+    try {
+      const j = await (await fetch(url)).json(), q = j.query || {}, map = {};
+      const norm = Object.fromEntries((q.normalized || []).map(n => [n.from, n.to]));
+      const redir = Object.fromEntries((q.redirects || []).map(n => [n.from, n.to]));
+      const byTitle = Object.fromEntries(Object.values(q.pages || {}).map(p => [p.title, p]));
+      list.forEach(t => { let k = norm[t] || t; k = redir[k] || k; if (byTitle[k]) map[t] = byTitle[k]; });
+      return map;
+    } catch (e) { return {}; }
+  })).then(parts => Object.assign({}, ...parts));
+  return wikiImages;
+}
+async function findPhoto(id) {
+  if (photoCache[id] !== undefined) return photoCache[id];
+  const own = id === 'car' ? 'assets/kei.jpg' : `assets/photos/${id}.jpg`;
+  try { await tryImage(own); return (photoCache[id] = { src: own, credit: 'Photo: my fieldwork, Hirakata' }); } catch (e) {}
+  const imgs = await loadWikiImages();
+  for (const title of (D.photos[id] || [])) {
+    const pg = imgs[title], src = pg && pg.thumbnail && pg.thumbnail.source;
+    if (!src || /\.svg|logo|flag|seal|coat_of_arms|emblem/i.test(src)) continue;
+    const page = pg.fullurl || ('https://en.wikipedia.org/wiki/' + title);
+    return (photoCache[id] = { src, credit: `Photo: Wikimedia Commons · <a href="${page}" target="_blank" rel="noopener">${pg.title}</a>` });
+  }
+  return (photoCache[id] = null);
+}
+async function loadPhoto(id, fig) {
+  if (!fig) return;
+  const ph = await findPhoto(id);
+  if (!fig.isConnected) return;
+  if (!ph) { fig.remove(); return; }
+  const img = new Image();
+  img.alt = 'Photo: ' + P[id].name;
+  img.onload = () => { fig.innerHTML = ''; fig.appendChild(img); fig.insertAdjacentHTML('beforeend', `<figcaption>${ph.credit}</figcaption>`); fig.classList.add('ready'); };
+  img.onerror = () => fig.remove();
+  img.src = ph.src;
 }
 
 /* ---------- controls ---------- */
@@ -202,10 +355,7 @@ $('threadList').innerHTML = `<li><button data-t="ALL" aria-pressed="true">All co
 $('threadList').querySelectorAll('button').forEach(b => b.onclick = () => {
   const k = b.dataset.t, t = D.threads[k];
   $('threadList').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  const op = t ? ['case', ['==', ['get', 'thread'], k], 1, 0.08] : (k === 'NONE' ? 0 : 0.9);
-  const gop = t ? ['case', ['==', ['get', 'thread'], k], 0.7, 0.03] : (k === 'NONE' ? 0 : 0.35);
-  map.setPaintProperty('conn', 'line-opacity', op);
-  map.setPaintProperty('conn-glow', 'line-opacity', gop);
+  threadFocus = k; popup.remove(); applyThreadFilter();
   $('threadText').innerHTML = t ? `${t.text}<span class="chain">${t.chain.map(id => P[id].name).join(' → ')}</span>` : '';
   if (t) {
     const views = new Set(t.chain.map(id => P[id].view));

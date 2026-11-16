@@ -19,10 +19,15 @@ Click the scale tabs at the top, or **Zoom out to …** in the side panel (the a
 
 Pins marked *representative place* show relations that are not tied to one exact spot.
 
-## Adding photos
+## The kei car as the hub
 
-- `assets/kei.jpg` appears on the kei car pin.
-- `assets/photos/<id>.jpg` appears on any other pin (ids are in `data.js`, e.g. `assets/photos/cityhall.jpg`).
+Everything starts with the object: the kei car I photographed in Hirakata (a Honda N-BOX). Every street-scale place links straight to it, and every other place links back to it through the threads. Click any place and its card shows **how it connects to the kei car**, step by step, while that path lights up on the map. The numbers in the side list show how many steps away each place is.
+
+## Photos
+
+- `assets/kei.jpg` is my own field photo of the object.
+- Other cards show the lead photo of a related Wikipedia article (Wikimedia Commons), credited on each card. The articles are listed under `photos` in `data.js`.
+- To use your own photo for any pin, add `assets/photos/<id>.jpg` (ids are in `data.js`, e.g. `assets/photos/cityhall.jpg`); it takes priority.
 
 ## Tech
 

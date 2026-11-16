@@ -29,7 +29,7 @@ window.KEI = {
   places: [
     /* ---------- HIRAKATA ---------- */
     { id: 'car', view: 'hirakata', dim: 'GEO', name: 'The kei car in Hirakata', jp: '軽自動車・枚方市', coord: [135.6452, 34.8150], car: true,
-      text: 'My ethnographic object. Japan’s “light vehicle” class is a legal category: at most 3.4 m long, 1.48 m wide and 660cc, with a yellow licence plate and lower taxes. In Hirakata it is so ordinary that it disappears into the street.' },
+      text: 'My ethnographic object, photographed at a crosswalk in Hirakata: a Honda N-BOX, small and square. Japan’s “light vehicle” class is a legal category: at most 3.4 m long, 1.48 m wide and 660cc, with a yellow licence plate and lower taxes. In Hirakata it is so ordinary that it disappears into the street.' },
     { id: 'cityhall', view: 'hirakata', dim: 'INF', name: 'Hirakata City Hall', jp: '枚方市役所', coord: [135.6513, 34.8139],
       text: 'The light-vehicle tax is a city tax, paid to the municipality. A private kei pays a flat ¥10,800 a year, while regular cars pay a prefectural automobile tax that starts around ¥25,000. The tax gap is one of the main reasons people choose a kei.' },
     { id: 'station', view: 'hirakata', dim: 'GEO', name: 'Keihan Hirakata-shi Station', jp: '京阪枚方市駅', coord: [135.6493, 34.8170],
@@ -116,6 +116,23 @@ window.KEI = {
       text: 'The format and the machines move: Suzuki’s know-how built India’s people’s car, a Chinese giant now builds kei for Japan, and old kei trucks cross the Pacific to fight for road space.' }
   },
 
+  // Card photos: Wikipedia articles whose lead image is shown (first one with a usable photo wins).
+  // Your own photos take priority: assets/kei.jpg for the car, assets/photos/<id>.jpg for any other pin.
+  photos: {
+    car: ['Kei_car'], cityhall: ['Hirakata,_Osaka'], station: ['Hirakatashi_Station', 'Keihan_Main_Line'],
+    kuzuha: ['Kuzuha_Station', 'Hirakata,_Osaka'], lanes: ['Daihatsu_Mira', 'Suzuki_Wagon_R'], homes: ['Suzuki_Spacia', 'Suzuki_Wagon_R'],
+    charger: ['Nissan_Sakura'], fuel: ['Suzuki_Alto'],
+    kasumigaseki: ['Kasumigaseki'], kosai: ['Suzuki_Suzulight'], ota: ['Subaru_360'], suzuka: ['Honda_N-Box'],
+    ikeda: ['Daihatsu'], oyamazaki: ['Ōyamazaki,_Kyoto'], ryuo: ['Daihatsu_Move', 'Daihatsu_Tanto'], nakatsu: ['Daihatsu_Hijet'],
+    mizushima: ['Mitsubishi_eK', 'Nissan_Sakura'], osakaport: ['Port_of_Osaka', 'Osaka_Bay'], susami: ['Susami,_Wakayama'],
+    mishima: ['Mishima,_Fukushima'], shimukappu: ['Shimukappu,_Hokkaido', 'Tomamu'], kinokawa: ['Kei_truck', 'Suzuki_Carry'],
+    shimane: ['Shimane_Prefecture'],
+    gurugram: ['Maruti_800'], malaysia: ['Perodua_Axia', 'Perodua_Myvi'], shenzhen: ['BYD_Auto', 'Shenzhen'],
+    maine: ['Augusta,_Maine', 'Maine'], massachusetts: ['Boston'], rhodeisland: ['Providence,_Rhode_Island'], texas: ['Austin,_Texas'],
+    atacama: ['Salar_de_Atacama'], greenbushes: ['Greenbushes_Lithium_Mine', 'Greenbushes,_Western_Australia'],
+    sulawesi: ['Morowali_Regency'], kolwezi: ['Kolwezi']
+  },
+
   sources: [
     ['Toyo Keizai (2026): kei share of new passenger cars FY2025; BYD Racco','https://toyokeizai.net/articles/-/954630?display=b'],
     ['Wikipedia: kei car regulations 1949–1998; rural parking exemption','https://en.wikipedia.org/wiki/Kei_car'],
@@ -144,6 +161,7 @@ window.KEI = {
     ['GearJunkie: Maine and Rhode Island restrictions','https://gearjunkie.com/?p=124070'],
     ['The Autopian: Massachusetts and the 25-year rule','https://www.theautopian.com/massachusetts-reviews-its-ridiculous-japanese-car-ban-after-enthusiasts-fight-back/'],
     ['Japan Car Direct: Texas SB 1816 recognises kei trucks','https://www.japancardirect.com/?p=38986'],
+    ['Card photos: Wikimedia Commons, via the Wikipedia article credited on each card','https://commons.wikimedia.org/'],
     ['Imagery © Esri, Maxar, Earthstar Geographics and the GIS User Community','https://www.esri.com/']
   ]
 };

@@ -16,7 +16,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* intro */
 #intro{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;
-  background:radial-gradient(ellipse at center,rgba(4,6,11,.35),rgba(4,6,11,.85));transition:opacity 1.2s ease;cursor:pointer}
+  background:radial-gradient(ellipse at center,rgba(4,6,11,.88),rgba(4,6,11,.97));transition:opacity 1.4s ease;cursor:pointer}
 #intro.gone{opacity:0;pointer-events:none}
 .intro-inner{animation:rise 1.4s ease both}
 .intro-kick{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
@@ -87,6 +87,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pin:focus-visible{outline:none}
 .pin.car .plate{width:34px;height:34px;font-size:17px;box-shadow:0 0 0 4px rgba(245,197,24,.25),0 0 24px rgba(245,197,24,.7)}
 .pin.car .lbl{background:var(--plate);color:#111;border-color:#1a1a1a;font-weight:600}
+.pin.sel .dot{transform:scale(1.35);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 22px var(--c)}
+.pin.sel .lbl{border-color:var(--c)}
 .pin.far .lbl{display:none}
 .pin.far .dot{width:9px;height:9px;border-width:1.5px;box-shadow:0 0 6px var(--c)}
 .pin.far .dot::after{display:none}
@@ -95,15 +97,19 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* popup */
 .glass-pop .maplibregl-popup-content{background:var(--glass-strong);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--ink);border:1px solid var(--edge);border-radius:16px;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.5);font-family:Inter,sans-serif;overflow:hidden}
-.glass-pop .maplibregl-popup-tip{display:none}
+.glass-pop .maplibregl-popup-tip{border-width:12px}
+.glass-pop.maplibregl-popup-anchor-right .maplibregl-popup-tip{border-left-color:rgba(12,16,24,.92)}
+.glass-pop.maplibregl-popup-anchor-bottom .maplibregl-popup-tip{border-top-color:rgba(12,16,24,.92)}
+.glass-pop .maplibregl-popup-content{max-height:calc(100vh - 120px);overflow:auto}
 .glass-pop .maplibregl-popup-close-button{font-size:22px;width:36px;height:36px;right:6px;top:8px;border-radius:9px;color:var(--muted);z-index:2}
 .glass-pop .maplibregl-popup-close-button:hover{background:rgba(255,255,255,.08);color:#fff}
 .pop{border-top:3px solid var(--c);margin:-18px -20px 0;padding:16px 20px 0}
+.glass-pop .maplibregl-popup-close-button{background:rgba(12,16,24,.6);color:#fff}
 .pop .tag{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
 .pop .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
 .pop h3{font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.15;margin:8px 30px 3px 0}
 .pop .jp{font-size:13px;margin-bottom:12px}
-.pop img{width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px;display:block}
+
 .pop p{font-size:14px;line-height:1.6;margin:0 0 10px;color:#d4d9e1}
 .pop p b{color:#fff}
 .pop .note{font-size:12px;color:var(--faint);font-style:italic}
@@ -145,3 +151,40 @@ button{font:inherit;color:inherit;cursor:pointer}
   #legend{top:70px;bottom:auto;right:8px;width:220px}
 }
 @media (prefers-reduced-motion:reduce){ .pin .dot::after{animation:none} .intro-inner{animation:none} }
+
+/* the car as hub */
+.mini{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;background:var(--plate);color:#111;border:1px solid #1a1a1a;font-family:var(--jp);font-size:10px;font-weight:500;flex:none}
+.hub{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#d4d9e1;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.25);border-radius:12px;padding:10px 12px;margin:0 0 16px}
+.hub .mini{margin-top:1px}
+.hub b{color:var(--gold);font-weight:600}
+.places .steps{margin-left:auto;font-style:normal;font-size:12px;font-weight:600;color:var(--gold);min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,214,107,.1);border:1px solid rgba(255,214,107,.3);flex:none}
+ol.path{list-style:none;margin:0 0 6px;padding:0 0 0 14px;position:relative}
+ol.path::before{content:'';position:absolute;left:4px;top:14px;bottom:14px;width:2px;background:linear-gradient(var(--plate),rgba(255,255,255,.6))}
+ol.path li{position:relative;margin:0 0 6px}
+ol.path li::before{content:'';position:absolute;left:-14px;top:13px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid rgba(12,16,24,.9)}
+ol.path button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--edge);background:rgba(255,255,255,.05);border-radius:10px;padding:6px 10px;min-height:36px;font-size:13px}
+ol.path button small{margin-left:auto;font-size:11px;color:var(--faint)}
+ol.path button:hover,ol.path button:focus-visible{border-color:var(--c);outline:none;background:rgba(255,255,255,.1)}
+ol.path button[aria-current="true"]{border-color:var(--c);background:rgba(255,255,255,.12);font-weight:600}
+.pathnote{font-size:13px!important}
+.pin.dim{opacity:.28}
+.pin{transition:opacity .3s}
+
+/* card photo */
+.pop .hero{position:relative;margin:-16px -20px 14px;height:180px;overflow:hidden;background:#141a24}
+.pop .hero img{width:100%;height:100%;object-fit:cover;display:block;animation:fadein .5s ease both}
+.pop .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(12,16,24,.85));pointer-events:none}
+.pop .hero figcaption{position:absolute;left:12px;bottom:8px;right:12px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.75)}
+.pop .hero figcaption a{color:rgba(255,255,255,.9)}
+.shimmer{position:absolute;inset:0;background:linear-gradient(100deg,#141a24 30%,#1f2733 50%,#141a24 70%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes fadein{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:none}}
+
+/* field photo of the object */
+.object{position:relative;display:block;width:100%;padding:0;margin:0 0 14px;border:1px solid rgba(245,197,24,.35);border-radius:14px;overflow:hidden;background:#111;text-align:left}
+.object img{display:block;width:100%;height:170px;object-fit:cover;object-position:center 60%;transition:transform .5s}
+.object span{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-family:var(--serif);font-size:18px;color:#fff}
+.object small{display:block;font-family:Inter,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.object:hover img,.object:focus-visible img{transform:scale(1.04)}
+.object:focus-visible{outline:2px solid var(--plate);outline-offset:2px}
+.pop .hero img[src*="assets/kei.jpg"]{object-position:center 60%}

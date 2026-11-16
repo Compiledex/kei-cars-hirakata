@@ -199,8 +199,10 @@ ol.path button[aria-current="true"]{border-color:var(--c);background:rgba(255,25
 .intro-hint{margin-top:14px;font-size:13px;color:var(--muted)}
 #intro.gone{opacity:0;pointer-events:none}
 #intro.gone .intro-inner{pointer-events:none}
-body:not(.story) #left,body:not(.story) #legend,body:not(.story) #tabs{opacity:0;pointer-events:none;transform:translateX(-12px)}
-#left,#legend,#tabs{transition:opacity .8s ease .3s,transform .8s ease .3s}
+body:not(.story) #left,body:not(.story) #legend{opacity:0;pointer-events:none;transform:translateX(-12px)}
+body:not(.story) #tabs{opacity:0;pointer-events:none}
+#left,#legend{transition:opacity .8s ease .3s,transform .8s ease .3s}
+#tabs{transition:opacity .8s ease .3s}
 body:not(.story) .pin .lbl{display:none}
 body:not(.story) .pin .dot{width:10px;height:10px;border-width:2px}
 body:not(.story) .pin .dot::after{display:none}

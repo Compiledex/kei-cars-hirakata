@@ -11,7 +11,7 @@ The map moves through **four scales**, from small to large:
 3. **Japan (日本)**, the nation: the ministries in Tokyo, the first kei factories, Daihatsu Kyushu, Mizushima, depopulating towns from Shimane to Hokkaido
 4. **World (世界)**, the planet: India's Maruti 800, BYD in Shenzhen, kei-truck fights in US states, lithium, nickel and cobalt mines
 
-Pin colours show the six dimensions of the assignment (histories, geographies, infrastructures, social relations, human and environmental realities). Dashed lines are the **relations of relations**: five threads that link places across scales. Pick one under *Legend & connections* to highlight it.
+Pin colours show the six dimensions of the assignment (histories, geographies, infrastructures, social relations, human and environmental realities). Glowing gold arcs are the **relations of relations**: five threads that link places across scales. Pick one under *Legend & connections* to highlight it.
 
 ## How to use it
 

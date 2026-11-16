@@ -4,63 +4,68 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kei Cars in Hirakata — From the Street to the World</title>
-<meta name="description" content="A 3D satellite map following the kei car from Hirakata's streets to Kansai, Japan and the world.">
+<meta name="description" content="A map story following one kei car from a crosswalk in Hirakata to the region, the nation and the world.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Noto+Sans+JP:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.1/dist/maplibre-gl.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="map" aria-label="3D satellite map of kei car relations"></div>
-<div class="vignette" aria-hidden="true"></div>
+<div id="map" aria-label="Satellite map of kei car relations"></div>
 
 <div id="intro">
   <div class="intro-inner">
-    <span class="plate big" aria-hidden="true">軽</span>
-    <div class="intro-kick">Assignment 3 · Relations of relations</div>
+    <div class="intro-meta">Ethnography · Assignment 3 · Relations of relations</div>
     <h1 id="introTitle"></h1>
     <p class="intro-sub" id="introSub"></p>
     <p class="intro-text" id="introText"></p>
-    <button id="begin" class="begin">Begin the story <span aria-hidden="true">→</span></button>
-    <div class="intro-hint">Or click any pin on the globe to jump in</div>
+    <button id="begin" class="begin">Begin <span aria-hidden="true">→</span></button>
+    <div class="intro-hint">Or select any point on the globe</div>
   </div>
+  <div class="intro-foot">Alexander · Hirakata, 2026</div>
 </div>
 
-<nav id="tabs" role="tablist" aria-label="Scale"></nav>
-
-<div id="left" class="glass">
+<div id="left">
   <header id="brand">
-    <span class="plate" aria-hidden="true">軽</span>
-    <div><div class="kick">Assignment 3 · Relations of relations</div><div class="title">Kei cars in Hirakata</div></div>
+    <div class="brand-row">
+      <span class="plate-mark" aria-hidden="true">軽</span>
+      <div class="title">Kei cars in Hirakata</div>
+      <button id="bSources" class="textbtn">Sources</button>
+    </div>
+    <nav id="tabs" role="tablist" aria-label="Scale"></nav>
   </header>
   <article id="story" aria-live="polite"></article>
   <footer class="storynav">
     <div class="bar"><div id="progress"></div></div>
     <div class="navrow">
-      <button id="prev" class="navbtn" aria-label="Previous step">← Back</button>
+      <button id="prev" class="navbtn" aria-label="Previous step">← Previous</button>
       <span id="count"></span>
       <button id="next" class="navbtn primary">Next →</button>
     </div>
   </footer>
 </div>
 
-<section id="legend" class="glass collapsed" aria-label="Legend">
-  <button id="legendToggle" class="ltoggle" aria-expanded="false">Legend &amp; connections</button>
+<section id="legend" class="collapsed" aria-label="Legend">
+  <button id="legendToggle" class="ltoggle" aria-expanded="false">Legend</button>
   <div class="lbody">
     <div class="lab">Dimensions</div>
     <ul id="dimList"></ul>
-    <div class="lab">Relations of relations</div>
+    <div class="lab">Lines</div>
+    <ul class="linekey">
+      <li><i class="k-conn"></i>Relation between places</li>
+      <li><i class="k-path"></i>Path back to the kei car</li>
+    </ul>
+    <div class="lab">Show one thread</div>
     <ul id="threadList"></ul>
     <p id="threadText"></p>
-    <button id="bSources" class="srcbtn">Sources</button>
   </div>
 </section>
 
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="srcTitle">
-  <div class="box glass">
+  <div class="box">
     <button id="mClose" class="close" aria-label="Close sources">×</button>
     <h2 id="srcTitle">Sources</h2>
-    <p class="muted">Pins marked “representative place” show relations that are not tied to one exact spot, such as a tax rate or a household routine.</p>
+    <p class="muted">Places marked “representative place” show relations that are not tied to one exact spot, such as a tax rate or a household routine.</p>
     <ul id="srcList"></ul>
   </div>
 </div>

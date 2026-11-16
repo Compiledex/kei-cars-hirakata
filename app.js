@@ -6,7 +6,7 @@ const ORDER = ['hirakata', 'kansai', 'japan', 'world'];
 const P = Object.fromEntries(D.places.map(p => [p.id, p]));
 const $ = id => document.getElementById(id);
 const mobile = () => innerWidth <= 820;
-const PANEL_W = 440;
+const PANEL_W = innerWidth <= 1240 ? 410 : 460;
 
 /* ---------- the story: a flat list of steps, outwards from the car ---------- */
 const STEPS = [];
@@ -68,6 +68,8 @@ const map = window._map = new maplibregl.Map({
   attributionControl: { compact: true }
 });
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+// On the opening screen, keep the globe to the right of the title.
+if (!mobile()) map.setPadding({ left: Math.round(innerWidth * 0.42), top: 0, right: 0, bottom: 0 });
 
 /* ---------- geometry ---------- */
 function toV([lo, la]) { const a = lo * Math.PI / 180, b = la * Math.PI / 180; return [Math.cos(b) * Math.cos(a), Math.cos(b) * Math.sin(a), Math.sin(b)]; }
@@ -121,7 +123,7 @@ function pathLines(id) {
 
 /* ---------- camera ---------- */
 function pad() {
-  return mobile() ? { top: 60, bottom: innerHeight * 0.48, left: 10, right: 10 } : { left: PANEL_W + 30, top: 70, right: 40, bottom: 30 };
+  return mobile() ? { top: 40, bottom: innerHeight * 0.54, left: 10, right: 10 } : { left: PANEL_W + 40, top: 50, right: 60, bottom: 40 };
 }
 // Long flights load far fewer tiles with terrain off; it comes back when the camera lands.
 function fly(opts, long) {
@@ -157,14 +159,14 @@ map.on('load', () => {
     'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] }); } catch (e) {}
   map.addSource('conn', { type: 'geojson', data: allLines() });
   map.addLayer({ id: 'conn-glow', type: 'line', source: 'conn', layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#ffcf5a', 'line-blur': 5, 'line-opacity': 0.3, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 5, 10, 10] } });
+    paint: { 'line-color': '#000000', 'line-blur': 1, 'line-opacity': 0.25, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.5, 10, 4] } });
   map.addLayer({ id: 'conn', type: 'line', source: 'conn', layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#ffe39a', 'line-opacity': 0.75, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.1, 10, 2.2] } });
+    paint: { 'line-color': '#ffffff', 'line-opacity': 0.55, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.8, 10, 1.4] } });
   map.addSource('path', { type: 'geojson', data: fc([]) });
   map.addLayer({ id: 'path-glow', type: 'line', source: 'path', layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#ffffff', 'line-blur': 6, 'line-opacity': 0.55, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 8, 10, 14] } });
+    paint: { 'line-color': '#000000', 'line-blur': 1, 'line-opacity': 0.45, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 4.5, 10, 7] } });
   map.addLayer({ id: 'path', type: 'line', source: 'path', layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.5, 10, 4] } });
+    paint: { 'line-color': '#f2c230', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2, 10, 3.2] } });
   addPins();
   loadWikiImages();
   spin();
@@ -195,14 +197,16 @@ function setPins(focusIds, selected) {
 let threadFocus = 'ALL';
 function lineOpacity(dimmed) {
   const k = threadFocus, t = D.threads[k];
-  const base = dimmed ? 0.16 : 0.75, gbase = dimmed ? 0.04 : 0.3;
-  map.setPaintProperty('conn', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 1, 0.06] : (k === 'NONE' ? 0 : base));
-  map.setPaintProperty('conn-glow', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.7, 0.02] : (k === 'NONE' ? 0 : gbase));
+  const base = dimmed ? 0.22 : 0.55, gbase = dimmed ? 0.08 : 0.25;
+  map.setPaintProperty('conn', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.95, 0.06] : (k === 'NONE' ? 0 : base));
+  map.setPaintProperty('conn-glow', 'line-opacity', t ? ['case', ['==', ['get', 'thread'], k], 0.35, 0.02] : (k === 'NONE' ? 0 : gbase));
 }
 function showPath(id) {
   map.getSource('path').setData(id && id !== 'car' ? pathLines(id) : fc([]));
   lineOpacity(!!id);
 }
+
+const fmt = ([lon, lat]) => `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}  ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? 'E' : 'W'}`;
 
 /* ---------- story navigation ---------- */
 function begin(i) {
@@ -218,9 +222,9 @@ function go(i, fromGlobe) {
   const long = fromGlobe || prevScale !== s.view;
   document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === scale)));
   $('progress').style.width = ((i + 1) / STEPS.length * 100) + '%';
-  $('count').textContent = `${i + 1} / ${STEPS.length}`;
+  $('count').textContent = `${String(i + 1).padStart(2, '0')} / ${STEPS.length}`;
   $('prev').disabled = i === 0;
-  $('next').innerHTML = i === STEPS.length - 1 ? 'Start again <span aria-hidden="true">↺</span>' : 'Next <span aria-hidden="true">→</span>';
+  $('next').innerHTML = i === STEPS.length - 1 ? 'Start again' : 'Next <span aria-hidden="true">→</span>';
   try { history.replaceState(null, '', '#step-' + (i + 1)); } catch (e) {}
   if (s.type === 'scale') renderScale(s.view, long);
   else if (s.type === 'place') renderPlace(s.id, long);
@@ -234,11 +238,11 @@ function renderScale(v, long) {
   const here = D.story.order[v];
   $('story').innerHTML = `<div class="chapter">Chapter ${i + 1} of 4 · ${i === 0 ? 'Start with the object' : 'Zooming out'}</div>
     <h2 class="big">${head}<span class="jp">${V.jp}</span></h2><div class="sub">${(sub || '').trim()}</div>
-    ${v === 'hirakata' ? `<button class="object" data-go="car"><img src="assets/kei.jpg" alt="The kei car I photographed in Hirakata: a white Honda N-BOX at a crosswalk" onerror="this.parentNode.remove()"><span><small>My object</small>The kei car in Hirakata →</span></button>` : ''}
+    ${v === 'hirakata' ? `<button class="object" data-go="car"><img src="assets/kei.jpg" alt="The kei car I photographed in Hirakata: a white Honda N-BOX at a crosswalk" onerror="this.parentNode.remove()"><span>The kei car in Hirakata<small>My object →</small></span></button>` : ''}
     <p class="lead">${V.intro}</p>
     <div class="relh">In this chapter</div>
     <ol class="toc">${here.map(id => `<li><button data-go="${id}" style="--c:${D.dims[P[id].dim].color}"><i></i><span><b>${P[id].name}</b><small>${P[id].jp}</small></span>
-      <em title="Steps from the kei car">${P[id].car ? '軽' : steps(id)}</em></button></li>`).join('')}</ol>`;
+      <em>${P[id].car ? 'the object' : steps(id) + (steps(id) === 1 ? ' step' : ' steps')}</em></button></li>`).join('')}</ol>`;
   bind();
   setPins(null, null); showPath(null);
   fly({ ...camFor(v), duration: long ? 3600 : 1800, curve: 1.5 }, long);
@@ -261,9 +265,8 @@ function renderPlace(id, long) {
   $('story').innerHTML = `<div class="chapter">Chapter ${ORDER.indexOf(p.view) + 1} · ${V.tab} <span class="jp">${V.jp}</span></div>
     <figure class="hero" data-hero="${id}"><div class="shimmer"></div></figure>
     <div class="tag" style="--c:${dim.color}">${dim.name}</div>
-    <h2>${p.name}</h2><div class="jp name-jp">${p.jp}</div>
+    <h2>${p.name}</h2><div class="jp name-jp">${p.jp}</div><div class="coords">${fmt(p.coord)}${p.anchor ? ' · representative place' : ''}</div>
     <p class="body">${p.text}</p>
-    ${p.anchor ? '<p class="note">Representative place: this relation is not tied to one exact spot.</p>' : ''}
     ${pathBlock}
     ${rel ? `<div class="relh">Also connected to</div>${rel}` : ''}
     <button class="above" data-above="${id}">See it from above</button>`;
@@ -367,7 +370,7 @@ $('begin').onclick = () => begin(0);
 ORDER.forEach((v, i) => {
   const V = D.views[v], b = document.createElement('button');
   b.dataset.view = v; b.setAttribute('role', 'tab');
-  b.innerHTML = `<span class="n">${i + 1}</span>${V.tab}<span class="jp">${V.jp}</span>`;
+  b.innerHTML = `<span class="n">0${i + 1}</span>${V.tab}`;
   b.onclick = () => (step < 0 ? begin(stepOfScale[v]) : go(stepOfScale[v]));
   $('tabs').appendChild(b);
 });

@@ -13,6 +13,10 @@ The map moves through **four scales**, from small to large:
 
 Pin colours show the six dimensions of the assignment (histories, geographies, infrastructures, social relations, human and environmental realities). Glowing gold arcs are the **relations of relations**: five threads that link places across scales. Pick one under *Legend & connections* to highlight it.
 
+## How it works
+
+The site opens on a spinning globe. **Begin the story** and the left panel becomes a storyteller: it starts with the kei car I photographed, then walks outwards place by place through four chapters (Hirakata → Kansai → Japan → World) and ends with the relations of relations and the two themes. Use **Next / Back** or the arrow keys; the scale tabs jump to a chapter. Click any pin and the story jumps there, so you can explore freely and keep reading from that point. Each step has its own link (`#step-12`).
+
 ## How to use it
 
 Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **See it from above** to fly down into the 3D satellite view.

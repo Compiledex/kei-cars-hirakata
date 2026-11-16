@@ -118,6 +118,32 @@ window.KEI = {
 
   // Card photos: Wikipedia articles whose lead image is shown (first one with a usable photo wins).
   // Your own photos take priority: assets/kei.jpg for the car, assets/photos/<id>.jpg for any other pin.
+  // The guided story: chapters go outwards from the car. Places inside a chapter are visited in this order.
+  story: {
+    title: 'Kei cars in Hirakata',
+    subtitle: 'From the street to the world',
+    welcome: 'This map follows one small car outwards. It starts with a kei car I photographed at a crosswalk in Hirakata, then moves step by step to the street around it, the region, the nation and the planet. Every place is linked back to that one car.',
+    order: {
+      hirakata: ['car', 'cityhall', 'station', 'kuzuha', 'lanes', 'homes', 'charger', 'fuel'],
+      kansai: ['suzuka', 'ikeda', 'oyamazaki', 'ryuo', 'osakaport', 'kinokawa', 'susami'],
+      japan: ['kasumigaseki', 'kosai', 'ota', 'nakatsu', 'mizushima', 'mishima', 'shimukappu', 'shimane'],
+      world: ['gurugram', 'shenzhen', 'malaysia', 'maine', 'massachusetts', 'rhodeisland', 'texas', 'atacama', 'greenbushes', 'sulawesi', 'kolwezi']
+    },
+    outro: {
+      title: 'Relations of relations',
+      text: 'Followed outwards, one parked car turns out to be tied to a 1949 law, a city tax, factories down the road, a safety scandal, shrinking villages, closing gas stations, India’s people’s car, American state laws and mines on three continents. None of these relations stands alone: each thread below links them into chains.'
+    }
+  },
+
+  themes: {
+    ANTH: { name: 'Anthropocene', head: 'A small car, a planetary system',
+      body: 'Made to save fuel and space, the kei now carries Japan’s EV transition, and with it a battery supply chain that reaches mines far from Hirakata. Efficiency at one scale produces new extraction at another.',
+      q: 'What happens when the “efficient” choice reshapes the infrastructure around it?' },
+    DISP: { name: 'Displacement', head: 'Who is left without mobility?',
+      body: 'Depopulation, closing gas stations and aging drivers turn a cheap car into the last link to shops, clinics and family, or into a missing one. People are displaced without ever moving house.',
+      q: 'Who is displaced when the kei is the only way to stay put?' }
+  },
+
   photos: {
     car: ['Kei_car'], cityhall: ['Hirakata,_Osaka'], station: ['Hirakatashi_Station', 'Keihan_Main_Line'],
     kuzuha: ['Kuzuha_Station', 'Hirakata,_Osaka'], lanes: ['Daihatsu_Mira', 'Suzuki_Wagon_R'], homes: ['Suzuki_Spacia', 'Suzuki_Wagon_R'],

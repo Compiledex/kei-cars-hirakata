@@ -14,12 +14,15 @@
 <div id="map" aria-label="3D satellite map of kei car relations"></div>
 <div class="vignette" aria-hidden="true"></div>
 
-<div id="intro" role="presentation">
+<div id="intro">
   <div class="intro-inner">
     <span class="plate big" aria-hidden="true">軽</span>
     <div class="intro-kick">Assignment 3 · Relations of relations</div>
-    <h1>Kei cars in Hirakata</h1>
-    <p>From the street to the world</p>
+    <h1 id="introTitle"></h1>
+    <p class="intro-sub" id="introSub"></p>
+    <p class="intro-text" id="introText"></p>
+    <button id="begin" class="begin">Begin the story <span aria-hidden="true">→</span></button>
+    <div class="intro-hint">Or click any pin on the globe to jump in</div>
   </div>
 </div>
 
@@ -30,7 +33,15 @@
     <span class="plate" aria-hidden="true">軽</span>
     <div><div class="kick">Assignment 3 · Relations of relations</div><div class="title">Kei cars in Hirakata</div></div>
   </header>
-  <aside id="side" aria-live="polite"></aside>
+  <article id="story" aria-live="polite"></article>
+  <footer class="storynav">
+    <div class="bar"><div id="progress"></div></div>
+    <div class="navrow">
+      <button id="prev" class="navbtn" aria-label="Previous step">← Back</button>
+      <span id="count"></span>
+      <button id="next" class="navbtn primary">Next →</button>
+    </div>
+  </footer>
 </div>
 
 <section id="legend" class="glass collapsed" aria-label="Legend">

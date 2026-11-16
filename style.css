@@ -34,8 +34,8 @@ a{color:var(--ink)}
 /* hide the reading interface until the story begins */
 body:not(.story) #left{transform:translateX(-100%)}
 body:not(.story) #legend,body:not(.story) .maplibregl-ctrl-group{opacity:0;pointer-events:none}
-body:not(.story) .maplibregl-ctrl-attrib{background:transparent!important}
-body:not(.story) .maplibregl-ctrl-attrib-inner{display:none}
+body:not(.story) .maplibregl-ctrl-bottom-right{opacity:0;pointer-events:none}
+.maplibregl-ctrl-bottom-right{transition:opacity .6s ease .4s}
 #left{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
 #legend,.maplibregl-ctrl-group{transition:opacity .6s ease .4s}
 body:not(.story) .pin .lbl{display:none}

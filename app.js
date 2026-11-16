@@ -251,7 +251,7 @@ function dive() {
   const dur = 7000;
   map.flyTo({ ...camFor('hirakata'), padding: pad(), duration: dur, curve: 1.7, essential: true });
   // The panel slides in while the camera settles.
-  setTimeout(() => { document.body.classList.remove('diving'); document.body.classList.add('story'); go(0, false, true); }, dur - 1400);
+  setTimeout(() => { document.body.classList.remove('diving'); document.body.classList.add('story'); chapterCard('hirakata'); go(0, false, true); }, dur - 1400);
 }
 function go(i, fromGlobe, afterDive) {
   i = Math.max(0, Math.min(STEPS.length - 1, i));

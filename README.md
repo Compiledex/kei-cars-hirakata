@@ -19,7 +19,7 @@ The site opens on a spinning globe. **Begin the story** and the left panel becom
 
 ## How to use it
 
-Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **See it from above** to fly down into the 3D satellite view.
+Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **Zoom in on the map** to get a closer satellite view.
 
 Pins marked *representative place* show relations that are not tied to one exact spot.
 
@@ -35,4 +35,4 @@ Everything starts with the object: the kei car I photographed in Hirakata (a Hon
 
 ## Tech
 
-Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) 5.24 with globe projection and 3D terrain. Satellite imagery and labels © Esri, Maxar, Earthstar Geographics; elevation from AWS Terrain Tiles; 3D buildings from OpenStreetMap via OpenFreeMap. All content is in `data.js`.
+Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) 5.24 with globe projection. Satellite imagery and labels © Esri, Maxar, Earthstar Geographics; labels and borders from OpenStreetMap via OpenFreeMap. All content is in `data.js`.

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=1794863061">
+<link rel="stylesheet" href="style.css?v=1794863286">
 </head>
 <body>
 <div id="map" aria-label="Satellite map of kei car relations"></div>
@@ -20,7 +20,6 @@
     <p class="intro-sub" id="introSub"></p>
     <p class="intro-text" id="introText"></p>
     <button id="begin" class="begin">Begin <span aria-hidden="true">→</span></button>
-    <div class="intro-hint">Or select any point on the globe</div>
   </div>
   <div class="intro-foot">Alexander · Hirakata, 2026</div>
 </div>
@@ -45,21 +44,6 @@
   </footer>
 </div>
 
-<section id="legend" class="collapsed" aria-label="Legend">
-  <button id="legendToggle" class="ltoggle" aria-expanded="false">Legend</button>
-  <div class="lbody">
-    <div class="lab">Dimensions</div>
-    <ul id="dimList"></ul>
-    <div class="lab">Lines</div>
-    <ul class="linekey">
-      <li><i class="k-conn"></i>Relation between places</li>
-      <li><i class="k-path"></i>Path back to the kei car</li>
-    </ul>
-    <div class="lab">Show one thread</div>
-    <ul id="threadList"></ul>
-    <p id="threadText"></p>
-  </div>
-</section>
 
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="srcTitle">
   <div class="box">
@@ -71,7 +55,7 @@
 </div>
 
 <script src="https://unpkg.com/maplibre-gl@5.24.1/dist/maplibre-gl.js"></script>
-<script src="data.js?v=1794863061"></script>
-<script src="app.js?v=1794863061"></script>
+<script src="data.js?v=1794863286"></script>
+<script src="app.js?v=1794863286"></script>
 </body>
 </html>

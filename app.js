@@ -22,7 +22,6 @@ let step = -1, scale = null;
 /* ---------- map style ---------- */
 const LABEL = ['coalesce', ['get', 'name:latin'], ['get', 'name_en'], ['get', 'name']];
 const HALO = { 'text-color': '#ffffff', 'text-halo-color': 'rgba(0,0,0,0.75)', 'text-halo-width': 1.4, 'text-halo-blur': 0.6 };
-const TERRAIN = { source: 'dem', exaggeration: 1.6 };
 const style = {
   version: 8,
   projection: { type: 'globe' },
@@ -31,9 +30,6 @@ const style = {
     sat: { type: 'raster', tileSize: 256, maxzoom: 19,
       tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
       attribution: 'Imagery © <a href="https://www.esri.com/">Esri</a>, Maxar, Earthstar Geographics' },
-    dem: { type: 'raster-dem', encoding: 'terrarium', tileSize: 256, maxzoom: 14,
-      tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
-      attribution: 'Elevation: <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a>' },
     omt: { type: 'vector', url: 'https://tiles.openfreemap.org/planet',
       attribution: '<a href="https://openfreemap.org">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }
   },
@@ -41,11 +37,6 @@ const style = {
     { id: 'bg', type: 'background', paint: { 'background-color': '#16211f' } },
     { id: 'sat', type: 'raster', source: 'sat',
       paint: { 'raster-saturation': -0.12, 'raster-contrast': 0.08, 'raster-brightness-max': 0.92, 'raster-fade-duration': 400 } },
-    { id: 'buildings', type: 'fill-extrusion', source: 'omt', 'source-layer': 'building', minzoom: 13.5,
-      paint: { 'fill-extrusion-color': '#ece6da',
-        'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 8],
-        'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
-        'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 15, 0.72] } },
     { id: 'borders', type: 'line', source: 'omt', 'source-layer': 'boundary', filter: ['==', ['get', 'admin_level'], 2],
       paint: { 'line-color': 'rgba(255,255,255,0.35)', 'line-width': 0.8 } },
     { id: 'country-labels', type: 'symbol', source: 'omt', 'source-layer': 'place', maxzoom: 5,
@@ -125,21 +116,15 @@ function pathLines(id) {
 function pad() {
   return mobile() ? { top: 40, bottom: innerHeight * 0.54, left: 10, right: 10 } : { left: PANEL_W + 40, top: 50, right: 60, bottom: 40 };
 }
-// Long flights load far fewer tiles with terrain off; it comes back when the camera lands.
-function fly(opts, long) {
+function fly(opts) {
   map.stop();
-  if (long) map.setTerrain(null);
   map.flyTo({ ...opts, padding: pad(), essential: true });
-  map.once('moveend', () => setTimeout(() => {
-    if (map.getZoom() > 5) map.setTerrain(TERRAIN); else map.setTerrain(null);
-    map.jumpTo({ bearing: map.getBearing() + 0.01 }); map.triggerRepaint();
-  }, 150));
 }
-function camFor(v) { const c = { ...D.views[v].camera }; if (mobile()) c.zoom = D.views[v].mobileZoom; return c; }
+function camFor(v) { const c = { ...D.views[v].camera }; c.pitch = Math.min(c.pitch, 35); if (mobile()) c.zoom = D.views[v].mobileZoom; return c; }
 function placeCam(p) {
   const c = camFor(p.view);
   const zoom = { hirakata: mobile() ? 13.4 : 14.6, kansai: mobile() ? 8.2 : 9.2, japan: mobile() ? 5.2 : 6.2, world: mobile() ? 1.6 : 2.6 }[p.view];
-  return { center: p.coord, zoom, pitch: c.pitch, bearing: p.view === 'world' ? 0 : c.bearing };
+  return { center: p.coord, zoom, pitch: Math.min(c.pitch, 35), bearing: p.view === 'world' ? 0 : c.bearing };
 }
 
 /* ---------- spinning globe for the opening ---------- */
@@ -183,7 +168,7 @@ function addPins() {
     el.setAttribute('aria-label', `${p.name}. ${dim.name}`);
     el.innerHTML = p.car ? `<span class="plate">軽</span><span class="lbl">${p.name}</span>` : `<span class="dot"></span><span class="lbl">${p.name}</span>`;
     el.addEventListener('click', e => { e.stopPropagation(); if (step < 0) begin(stepOfPlace[p.id]); else go(stepOfPlace[p.id]); });
-    pins[p.id] = new maplibregl.Marker({ element: el, anchor: 'left', offset: p.car ? [-18, 0] : [-9, 0] }).setLngLat(p.coord).addTo(map);
+    pins[p.id] = new maplibregl.Marker({ element: el, anchor: 'left', offset: p.car ? [-18, 0] : [-11, 0] }).setLngLat(p.coord).addTo(map);
   });
 }
 function setPins(focusIds, selected) {
@@ -242,7 +227,7 @@ function renderScale(v, long) {
     <p class="lead">${V.intro}</p>
     <div class="relh">In this chapter</div>
     <ol class="toc">${here.map(id => `<li><button data-go="${id}" style="--c:${D.dims[P[id].dim].color}"><i></i><span><b>${P[id].name}</b><small>${P[id].jp}</small></span>
-      <em>${P[id].car ? 'the object' : steps(id) + (steps(id) === 1 ? ' step' : ' steps')}</em></button></li>`).join('')}</ol>`;
+      <em>${P[id].car ? 'The object' : D.dims[P[id].dim].name}</em></button></li>`).join('')}</ol>`;
   bind();
   setPins(null, null); showPath(null);
   fly({ ...camFor(v), duration: long ? 3600 : 1800, curve: 1.5 }, long);
@@ -269,7 +254,7 @@ function renderPlace(id, long) {
     <p class="body">${p.text}</p>
     ${pathBlock}
     ${rel ? `<div class="relh">Also connected to</div>${rel}` : ''}
-    <button class="above" data-above="${id}">See it from above</button>`;
+    <button class="above" data-above="${id}">Zoom in on the map</button>`;
   bind();
   loadPhoto(id, $('story').querySelector('[data-hero]'));
   const on = new Set(p.car ? ['car', ...(ADJ.car || [])] : ids);
@@ -300,7 +285,7 @@ function bind() {
   $('story').querySelectorAll('[data-thread]').forEach(b => b.onclick = () => setThread(b.dataset.thread));
   $('story').querySelectorAll('[data-above]').forEach(b => b.onclick = () => {
     const p = P[b.dataset.above];
-    fly({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.4, pitch: 58, bearing: map.getBearing(), duration: 2800 }, true);
+    fly({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.5, pitch: 30, bearing: map.getBearing(), duration: 2600 });
   });
 }
 function setThread(k) {
@@ -309,7 +294,6 @@ function setThread(k) {
   document.querySelectorAll('[data-thread]').forEach(x => x.classList.toggle('on', x.dataset.thread === k));
   lineOpacity(false); map.getSource('path').setData(fc([]));
   const t = D.threads[k];
-  $('threadText').innerHTML = t ? `${t.text}<span class="chain">${t.chain.map(id => P[id].name).join(' → ')}</span>` : '';
   if (t) setPins(new Set(t.chain), null);
   else setPins(null, null);
 }
@@ -376,12 +360,6 @@ ORDER.forEach((v, i) => {
 });
 $('prev').onclick = () => go(step - 1);
 $('next').onclick = () => go(step === STEPS.length - 1 ? 0 : step + 1);
-$('dimList').innerHTML = Object.values(D.dims).map(d => `<li><i style="--c:${d.color}"></i>${d.name}</li>`).join('');
-$('threadList').innerHTML = `<li><button data-t="ALL" aria-pressed="true">All connections</button></li>` +
-  Object.entries(D.threads).map(([k, t]) => `<li><button data-t="${k}" aria-pressed="false">${t.name}</button></li>`).join('') +
-  `<li><button data-t="NONE" aria-pressed="false">Hide connections</button></li>`;
-$('threadList').querySelectorAll('button').forEach(b => b.onclick = () => setThread(b.dataset.t));
-$('legendToggle').onclick = () => { const c = $('legend').classList.toggle('collapsed'); $('legendToggle').setAttribute('aria-expanded', String(!c)); };
 $('srcList').innerHTML = D.sources.map(([t, u]) => u ? `<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>` : `<li>${t}</li>`).join('');
 $('bSources').onclick = () => $('modal').classList.add('on');
 $('mClose').onclick = () => $('modal').classList.remove('on');

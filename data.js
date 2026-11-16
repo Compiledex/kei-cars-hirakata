@@ -29,9 +29,13 @@ window.KEI = {
   places: [
     /* ---------- HIRAKATA ---------- */
     { id: 'car', view: 'hirakata', dim: 'GEO', name: 'The kei car in Hirakata', jp: '軽自動車・枚方市', coord: [135.6452, 34.8150], car: true,
-      text: 'My ethnographic object, photographed at a crosswalk in Hirakata: a Honda N-BOX, small and square. Japan’s “light vehicle” class is a legal category: at most 3.4 m long, 1.48 m wide and 660cc, with a yellow licence plate and lower taxes. In Hirakata it is so ordinary that it disappears into the street.' },
+      text: 'My ethnographic object, photographed at a crosswalk in Hirakata: a Honda N-BOX, small and square. Coming from Norway, where the best-selling car is almost 5 m long, I saw these cars with “new eyes”, what Tsing calls seeing differently. Five threads run out of the photo: the crosswalk, the driver, the car itself, the yellow plate and the fuel cap. Japan’s “light vehicle” class is a legal category: at most 3.4 m long, 1.48 m wide and 660cc, with a yellow licence plate and lower taxes. In Hirakata it is so ordinary that it disappears into the street.' },
+    { id: 'shuku', view: 'hirakata', dim: 'HIST', name: 'Hirakata-shuku & the Yodo River', jp: '枚方宿・淀川', coord: [135.6553, 34.8082],
+      text: 'Hirakata has always been a place people pass through, halfway between Osaka (about 20 km) and Kyoto (about 24 km). <b>1601</b>: a post town on the Osaka–Kyoto road and a busy port for river boats. <b>1910</b>: the Keihan railway replaces the boats. <b>1960s</b>: a bedroom town for city workers. <b>Today</b>: kei cars squeeze through streets made for walkers and horses, the newest layer of movement along the same route.' },
     { id: 'cityhall', view: 'hirakata', dim: 'INF', name: 'Hirakata City Hall', jp: '枚方市役所', coord: [135.6513, 34.8139],
       text: 'The light-vehicle tax is a city tax, paid to the municipality. A private kei pays a flat ¥10,800 a year, while regular cars pay a prefectural automobile tax that starts around ¥25,000. The tax gap is one of the main reasons people choose a kei.' },
+    { id: 'inspection', view: 'hirakata', dim: 'INF', anchor: true, name: 'Shaken: the 2-year inspection', jp: '車検', coord: [135.6625, 34.8290],
+      text: 'Every two years a car must pass the shaken inspection. As cars age, keeping them on the road gets more expensive, which pushes many owners to replace a car that still works. Old kei become cheap, and many leave Japan: to scrapyards, to export ports, and after 25 years to American farms.' },
     { id: 'station', view: 'hirakata', dim: 'GEO', name: 'Keihan Hirakata-shi Station', jp: '京阪枚方市駅', coord: [135.6493, 34.8170],
       text: 'Trains connect Hirakata to Osaka and Kyoto. Rail handles commuting into the cities; the small car handles everything else locally: errands, school runs, care visits.' },
     { id: 'kuzuha', view: 'hirakata', dim: 'HUM', name: 'Kuzuha Mall', jp: 'くずはモール', coord: [135.6789, 34.8636],
@@ -41,8 +45,8 @@ window.KEI = {
     { id: 'homes', view: 'hirakata', dim: 'SOC', anchor: true, name: 'Households', jp: '家庭', coord: [135.6372, 34.8098],
       text: 'The everyday car: shopping, school runs, trips to the clinic, visits to aging parents. The kei connects family obligations across the city.' },
     { id: 'charger', view: 'hirakata', dim: 'ENV', anchor: true, name: 'A home charger', jp: '自宅充電', coord: [135.6610, 34.8245],
-      text: 'Electric kei like the Nissan Sakura mostly charge at home, which ties the small car to the electricity grid and to the fuels that generate that power.' },
-    { id: 'fuel', view: 'hirakata', dim: 'ENV', anchor: true, name: 'A neighbourhood gas station', jp: 'ガソリンスタンド', coord: [135.6575, 34.8062],
+      text: 'Electric kei like the Nissan Sakura mostly charge at home. They run on electricity instead of petrol, but much of Japan’s power still comes from imported gas and coal. The link to the world moves; it does not disappear.' },
+    { id: 'fuel', view: 'hirakata', dim: 'ENV', anchor: true, name: 'A neighbourhood gas station', jp: 'ガソリンスタンド', coord: [135.6648, 34.8148],
       text: 'Small engines and light bodies use less gasoline. Together with hybrids and EVs, efficient cars have pushed Japan’s gasoline demand down, and with it the number of gas stations.' },
 
     /* ---------- JAPAN ---------- */
@@ -57,7 +61,7 @@ window.KEI = {
     { id: 'ikeda', view: 'kansai', dim: 'HIST', name: 'Daihatsu headquarters, Ikeda, Osaka', jp: 'ダイハツ本社・池田市', coord: [135.4330, 34.8100],
       text: 'Daihatsu, Toyota’s kei-car maker, is headquartered about 25 km from Hirakata. After a whistleblower came forward in 2023, it admitted falsifying safety tests on 64 models going back decades, and stopped production at all its Japanese plants.' },
     { id: 'oyamazaki', view: 'kansai', dim: 'GEO', name: 'Daihatsu Kyoto plant, Ōyamazaki', jp: 'ダイハツ京都工場・大山崎町', coord: [135.6880, 34.9030],
-      text: 'Just across the Yodo River valley from Hirakata. During the 2023–24 shutdown its lines stood still until the ministry lifted shipment suspensions model by model.' },
+      text: 'Just across the Yodo River from Hirakata. The plant can finish a car in under a minute, a fixed pace called takt time, and parts arrive “just in time” by truck, so factory and roads share one rhythm. It once built the Midget, an early kei three-wheeler. When the safety scandal hit, the rhythm broke: the lines stood still in 2023–24 until the ministry lifted the shipment suspensions.' },
     { id: 'ryuo', view: 'kansai', dim: 'SOC', name: 'Daihatsu Shiga plant, Ryūō', jp: 'ダイハツ滋賀工場・竜王町', coord: [136.1150, 35.0600],
       text: 'Investigators blamed the falsified tests on pressure from tight development schedules. During the shutdown, about 9,000 Daihatsu workers in Japan faced an uncertain future.' },
     { id: 'nakatsu', view: 'japan', dim: 'SOC', name: 'Daihatsu Kyushu, Nakatsu, Ōita', jp: 'ダイハツ九州・中津市', coord: [131.2050, 33.6050],
@@ -65,7 +69,7 @@ window.KEI = {
     { id: 'mizushima', view: 'japan', dim: 'ENV', name: 'Mitsubishi Mizushima plant, Okayama', jp: '三菱自動車水島製作所', coord: [133.7400, 34.5200],
       text: 'Where the Nissan Sakura and Mitsubishi eK X EV electric kei are built. The Sakura has a 20 kWh battery and about 180 km of range, and has been Japan’s best-selling EV four years running.' },
     { id: 'osakaport', view: 'kansai', dim: 'ENV', anchor: true, name: 'Port of Osaka', jp: '大阪港', coord: [135.4300, 34.6450],
-      text: 'Kei cars have second lives. Old kei are scrapped and recycled, or shipped abroad as used cars, taking their emissions and safety standards with them.' },
+      text: 'Kei cars have second lives. Millions of used cars are exported every year from Japan, Europe and the US, mostly to low- and middle-income countries, many of them older and more polluting (UNEP, 2020). Rules that keep Japanese roads safe and modern push pollution to places where it is harder to regulate: a feral effect of sensible legislation.' },
     { id: 'susami', view: 'kansai', dim: 'INF', name: 'Susami, Wakayama', jp: 'すさみ町', coord: [135.4950, 33.5520],
       text: 'Japan had about 60,000 gas stations in 1994 and 27,963 by 2022. In 282 municipalities the nearest pump is at least 15 km away. In Susami the town government bought a closed station and reopened it with national subsidies.' },
     { id: 'mishima', view: 'japan', dim: 'INF', name: 'Mishima, Fukushima', jp: '三島町', coord: [139.6400, 37.4700],
@@ -73,11 +77,20 @@ window.KEI = {
     { id: 'shimukappu', view: 'japan', dim: 'GEO', name: 'Shimukappu, Hokkaido', jp: '占冠村', coord: [142.6300, 43.0300],
       text: 'Residents reopened the village’s only gas station four years after it closed. In rural Japan, where buses thin out and young people leave, households often keep two or three kei as their transport.' },
     { id: 'kinokawa', view: 'kansai', dim: 'SOC', anchor: true, name: 'Farmland, Kinokawa, Wakayama', jp: '紀の川市', coord: [135.3800, 34.2700],
-      text: 'Kei trucks like the Daihatsu Hijet and Suzuki Carry haul crops, tools and stock: the workhorse of small-scale farming. Rural kei also usually skip the garage certificate a regular car needs.' },
+      text: 'Kei trucks like the Daihatsu Hijet and Suzuki Carry haul crops, tools and stock: the workhorse of small-scale farming, working to the rhythm of the seasons, from rice planting to harvest. Rural kei also usually skip the garage certificate a regular car needs.' },
     { id: 'shimane', view: 'japan', dim: 'HUM', anchor: true, name: 'Rural Shimane', jp: '島根県の農村', coord: [132.8500, 35.2500],
       text: 'A study of elderly people in rural Shimane found fewer and fewer drivers for those who no longer drive. When older people give up their licence, they lose the kei and depend on neighbours.' },
 
     /* ---------- WORLD ---------- */
+    { id: 'norway', view: 'world', dim: 'GEO', name: 'Norway: where I come from', jp: 'ノルウェー', coord: [10.7522, 59.9139],
+      text: 'In Norway cars are big and roads are wide: the best-selling car in 2025, the Tesla Model Y, is about 4.8 m long, 1.4 m longer than the N-BOX in my photo. That gap is why I noticed kei cars at all. Norway’s green transition also depends on lithium and cobalt mined elsewhere, what Anvaari (2025) calls an “imperial mode of living”.' },
+    { id: 'gulf', view: 'world', dim: 'ENV', anchor: true, name: 'The Persian Gulf: oil', jp: 'ペルシャ湾', coord: [50.1600, 26.6400],
+      text: 'Japan imports almost all of its oil, most of it from the Middle East. Every fuel-efficient kei means a little less oil shipped in by tanker: the fuel cap in my photo leads here.' },
+    { id: 'jakarta', view: 'world', dim: 'GEO', name: 'Jakarta, Indonesia: the Bemo', jp: 'ジャカルタ', coord: [106.8456, -6.2088],
+      text: 'The Daihatsu Midget, an early kei three-wheeler once built at the Kyoto plant across the river from Hirakata, found a second life in Indonesia as the “Bemo”, a small shared taxi.' },
+    { id: 'fordlandia', view: 'world', dim: 'HIST', name: 'Fordlândia, Brazil', jp: 'フォードランジア', coord: [-55.5000, -3.8300],
+      text: 'In 1928 Henry Ford built a rubber plantation town in the Amazon to supply his car factories. The trees, planted close together, caught leaf blight, and workers revolted against the factory routine (Grandin, 2009). Haraway (2015) calls this simplified, scalable way of producing the Plantationocene; Tsing et al. (2020) call what escapes it feral effects. The kei factory’s one-car-a-minute line comes from the same logic.' },
+
     { id: 'gurugram', view: 'world', dim: 'GEO', name: 'Gurugram, India', jp: 'グルグラム', coord: [77.0266, 28.4595],
       text: 'In 1983 Maruti Suzuki began building the Maruti 800 here, based on the Suzuki Alto kei car. It became India’s “people’s car” and stayed in production until 2014: the kei format, exported as a national project.' },
     { id: 'malaysia', view: 'world', dim: 'HUM', anchor: true, name: 'Malaysia & Thailand', jp: 'マレーシア・タイ', coord: [101.6869, 3.1390],
@@ -99,21 +112,21 @@ window.KEI = {
     { id: 'sulawesi', view: 'world', dim: 'ENV', name: 'Morowali, Sulawesi, Indonesia', jp: 'モロワリ', coord: [122.1500, -2.8500],
       text: 'A huge nickel-processing hub carved out of forest and coast. Nickel is a key battery metal, and its processing here has a heavy environmental footprint.' },
     { id: 'kolwezi', view: 'world', dim: 'ENV', name: 'Kolwezi, DR Congo', jp: 'コルウェジ', coord: [25.4667, -10.7167],
-      text: 'At the heart of the copper-cobalt belt that supplies much of the world’s cobalt, often under harsh labour conditions. Cobalt is used in many lithium-ion batteries.' }
+      text: 'At the heart of the copper-cobalt belt that supplies much of the world’s cobalt. Amnesty International (2016) documented cobalt for lithium-ion batteries being mined by hand here, including by children. The air may be cleaner in Hirakata; the health and water costs land here.' }
   ],
 
   // Relations of relations: each thread is an ordered chain of place ids.
   threads: {
-    STATE:  { name: 'State-made smallness', chain: ['kasumigaseki','kosai','ota','cityhall','kuzuha','lanes'],
+    STATE:  { name: 'State-made smallness', chain: ['kasumigaseki','kosai','ota','cityhall','inspection','kuzuha','lanes'],
       text: 'A rule written for postwar scarcity still decides what fits on a Hirakata street and in a household budget.' },
     DEPOP:  { name: 'Depopulation', chain: ['shimukappu','mishima','susami','kinokawa','shimane','homes'],
       text: 'In shrinking towns the kei replaces the bus. As pumps and drivers disappear, the gap reopens: people are displaced without moving.' },
-    CARBON: { name: 'Carbon & energy', chain: ['fuel','susami','mizushima','charger','atacama','greenbushes','sulawesi','kolwezi'],
+    CARBON: { name: 'Carbon & energy', chain: ['gulf','fuel','susami','mizushima','charger','atacama','greenbushes','sulawesi','kolwezi','norway'],
       text: 'Fuel-saving kei help close rural gas stations; the electric fix depends on the grid and on mines far away. An unintended-consequence loop.' },
-    MAKING: { name: 'Making & breaking', chain: ['suzuka','oyamazaki','ikeda','ryuo','nakatsu','kasumigaseki','malaysia'],
+    MAKING: { name: 'Making & breaking', chain: ['fordlandia','suzuka','oyamazaki','ikeda','ryuo','nakatsu','kasumigaseki','malaysia'],
       text: 'Kei are built a short drive from Hirakata. When safety tests were faked, the failure ran from factory floor to ministry to buyers abroad.' },
-    TRAVEL: { name: 'The kei travels', chain: ['kosai','gurugram','shenzhen','car','osakaport','maine','massachusetts','rhodeisland','texas'],
-      text: 'The format and the machines move: Suzuki’s know-how built India’s people’s car, a Chinese giant now builds kei for Japan, and old kei trucks cross the Pacific to fight for road space.' }
+    TRAVEL: { name: 'The kei travels', chain: ['kosai','gurugram','shenzhen','car','shuku','inspection','osakaport','jakarta','maine','massachusetts','rhodeisland','texas'],
+      text: 'Hirakata was always a route, and the kei keeps moving: inspections push old cars out through the port to Indonesia and the US, Suzuki’s know-how built India’s people’s car, a Chinese giant now builds kei for Japan, and old kei trucks cross the Pacific to fight for road space.' }
   },
 
   // Card photos: Wikipedia articles whose lead image is shown (first one with a usable photo wins).
@@ -124,20 +137,27 @@ window.KEI = {
     subtitle: 'From the street to the world',
     welcome: 'This map follows one small car outwards. It starts with a kei car I photographed at a crosswalk in Hirakata, then moves step by step to the street around it, the region, the nation and the planet. Every place is linked back to that one car.',
     order: {
-      hirakata: ['car', 'cityhall', 'station', 'kuzuha', 'lanes', 'homes', 'charger', 'fuel'],
+      hirakata: ['car', 'shuku', 'cityhall', 'inspection', 'station', 'kuzuha', 'lanes', 'homes', 'charger', 'fuel'],
       kansai: ['suzuka', 'ikeda', 'oyamazaki', 'ryuo', 'osakaport', 'kinokawa', 'susami'],
       japan: ['kasumigaseki', 'kosai', 'ota', 'nakatsu', 'mizushima', 'mishima', 'shimukappu', 'shimane'],
-      world: ['gurugram', 'shenzhen', 'malaysia', 'maine', 'massachusetts', 'rhodeisland', 'texas', 'atacama', 'greenbushes', 'sulawesi', 'kolwezi']
+      world: ['gulf', 'gurugram', 'jakarta', 'shenzhen', 'malaysia', 'maine', 'massachusetts', 'rhodeisland', 'texas', 'fordlandia', 'atacama', 'greenbushes', 'sulawesi', 'kolwezi', 'norway']
     },
     outro: {
       title: 'Relations of relations',
+      rhythms: [['Every minute', 'A car leaves the factory line'], ['Every day', 'Commutes, school runs, shopping'], ['Every season', 'Rice planting and harvest, kei trucks in the fields'],
+        ['Every 2 years', 'Shaken inspection; many people replace their car'], ['25 years', 'Old kei trucks can be exported to the US'], ['Since 1949', 'The kei car category'], ['Since 1601', 'The Osaka–Kyoto route through Hirakata']],
+      questions: ['How do farmers around Hirakata use kei trucks through the year, and what happens as they get older?',
+        'How did Hirakata’s change from post town to bedroom town shape its streets and parking?',
+        'What happens to workers, suppliers and roads when a nearby factory’s rhythm stops, like Daihatsu in 2023?',
+        'Who in Hirakata depends most on kei cars, and what would change if the tax benefits disappeared?',
+        'Will electric kei cars change the link between small cars, energy and the environment?'],
       text: 'Followed outwards, one parked car turns out to be tied to a 1949 law, a city tax, factories down the road, a safety scandal, shrinking villages, closing gas stations, India’s people’s car, American state laws and mines on three continents. None of these relations stands alone: each thread below links them into chains.'
     }
   },
 
   themes: {
     ANTH: { name: 'Anthropocene', head: 'A small car, a planetary system',
-      body: 'Made to save fuel and space, the kei now carries Japan’s EV transition, and with it a battery supply chain that reaches mines far from Hirakata. Efficiency at one scale produces new extraction at another.',
+      body: 'Swanson (2017) describes a banal Anthropocene, marked by “the sheer number of people it fails to trouble”: the damage shows up not as a flood but in a parking lot. The kei looks efficient and harmless, yet it carries Japan’s EV transition and a supply chain reaching mines on other continents. With Haraway’s (2015) Plantationocene and Tsing et al.’s (2020) feral effects, nature and culture cannot be pulled apart.',
       q: 'What happens when the “efficient” choice reshapes the infrastructure around it?' },
     DISP: { name: 'Displacement', head: 'Who is left without mobility?',
       body: 'Depopulation, closing gas stations and aging drivers turn a cheap car into the last link to shops, clinics and family, or into a missing one. People are displaced without ever moving house.',
@@ -152,7 +172,8 @@ window.KEI = {
     ikeda: ['Daihatsu'], oyamazaki: ['Ōyamazaki,_Kyoto'], ryuo: ['Daihatsu_Move', 'Daihatsu_Tanto'], nakatsu: ['Daihatsu_Hijet'],
     mizushima: ['Mitsubishi_eK', 'Nissan_Sakura'], osakaport: ['Port_of_Osaka', 'Osaka_Bay'], susami: ['Susami,_Wakayama'],
     mishima: ['Mishima,_Fukushima'], shimukappu: ['Shimukappu,_Hokkaido', 'Tomamu'], kinokawa: ['Kei_truck', 'Suzuki_Carry'],
-    shimane: ['Shimane_Prefecture'],
+    shimane: ['Shimane_Prefecture'], shuku: ['Hirakata-juku', 'Yodo_River'], inspection: ['Vehicle_inspection_in_Japan', 'Kei_car'],
+    norway: ['Tesla_Model_Y', 'Oslo'], gulf: ['Ras_Tanura', 'Persian_Gulf'], jakarta: ['Bemo', 'Daihatsu_Midget'], fordlandia: ['Fordlândia'],
     gurugram: ['Maruti_800'], malaysia: ['Perodua_Axia', 'Perodua_Myvi'], shenzhen: ['BYD_Auto', 'Shenzhen'],
     maine: ['Augusta,_Maine', 'Maine'], massachusetts: ['Boston'], rhodeisland: ['Providence,_Rhode_Island'], texas: ['Austin,_Texas'],
     atacama: ['Salar_de_Atacama'], greenbushes: ['Greenbushes_Lithium_Mine', 'Greenbushes,_Western_Australia'],
@@ -187,6 +208,22 @@ window.KEI = {
     ['GearJunkie: Maine and Rhode Island restrictions','https://gearjunkie.com/?p=124070'],
     ['The Autopian: Massachusetts and the 25-year rule','https://www.theautopian.com/massachusetts-reviews-its-ridiculous-japanese-car-ban-after-enthusiasts-fight-back/'],
     ['Japan Car Direct: Texas SB 1816 recognises kei trucks','https://www.japancardirect.com/?p=38986'],
+    ['Alexander (2026). Kei car at a crosswalk, Hirakata [Photograph]',''],
+    ['Tsing, A. L. (2015). The mushroom at the end of the world. Princeton University Press',''],
+    ['Tsing, A. L., Deger, J., Saxena, A. K., & Zhou, F. (2020). Feral atlas: The more-than-human Anthropocene','https://feralatlas.supdigital.org/'],
+    ['Swanson, H. A. (2017). The banality of the Anthropocene. Fieldsights','https://www.culanth.org/fieldsights/the-banality-of-the-anthropocene'],
+    ['Haraway, D. (2015). Anthropocene, Capitalocene, Plantationocene, Chthulucene: Making kin. Environmental Humanities, 6(1)','https://doi.org/10.1215/22011919-3615934'],
+    ['Grandin, G. (2009). Fordlandia: The rise and fall of Henry Ford’s forgotten jungle city. Metropolitan Books',''],
+    ['Amnesty International (2016). “This is what we die for”: Human rights abuses in the DRC power the global trade in cobalt',''],
+    ['Anvaari, M. (2025). The doughnut and the divide: Can Norway confront its imperial mode of living?','https://developingeconomics.org/2025/08/05/the-doughnut-and-the-divide-can-norway-confront-its-imperial-mode-of-living/'],
+    ['UNEP (2020). Used vehicles and the environment: A global overview of used light duty vehicles',''],
+    ['GAIKINDO (2025). Media visit to Daihatsu’s Kyoto Oyamazaki Plant','https://www.gaikindo.or.id/en/?p=25944'],
+    ['Hirakata City. Tokaido Road: Hirakata-shuku [Guide map]','https://www.city.hirakata.osaka.jp/cmsfiles/contents/0000053/53334/TokaidoRoad_EN.pdf'],
+    ['Wikipedia: Hirakata-juku','https://en.wikipedia.org/wiki/Hirakata-juku'],
+    ['NHTSA: Importing vehicles at least 25 years old (49 U.S.C. 30112(b)(9))','https://www.nhtsa.gov/interpretations/23894ztv'],
+    ['Nippon.com: Japan still reliant on Middle Eastern oil','https://nippon.com/en/japan-data/h00482/japan-still-reliant-on-middle-eastern-oil.html'],
+    ['Best Selling Cars Blog: Norway full year 2025, Tesla Model Y at all-time high','https://bestsellingcarsblog.com/2026/01/norway-full-year-2025-record-market-39-5-tesla-and-model-y-at-all-time-high/'],
+    ['Inovev (2025): Japan Mobility Show 2025, focus on kei cars','https://inovev.com/index.php/en/market-analyses/category-blog/21616-2025-21-2'],
     ['Card photos: Wikimedia Commons, via the Wikipedia article credited on each card','https://commons.wikimedia.org/'],
     ['Imagery © Esri, Maxar, Earthstar Geographics and the GIS User Community','https://www.esri.com/']
   ]

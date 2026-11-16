@@ -96,6 +96,7 @@ const EDGES = [];
 Object.values(D.threads).forEach(t => { for (let i = 0; i < t.chain.length - 1; i++) EDGES.push([t.chain[i], t.chain[i + 1]]); });
 D.places.filter(p => p.view === 'hirakata' && !p.car).forEach(p => EDGES.push(['car', p.id, 'spoke']));
 EDGES.push(['car', 'suzuka', 'spoke']); // the car I photographed is an N-BOX, built at Honda Suzuka
+EDGES.push(['car', 'norway', 'spoke']); // where I come from: why I noticed the car at all
 const ADJ = {};
 EDGES.forEach(([a, b]) => { (ADJ[a] = ADJ[a] || new Set()).add(b); (ADJ[b] = ADJ[b] || new Set()).add(a); });
 const PATH = { car: ['car'] };
@@ -280,8 +281,12 @@ function renderOutro(long) {
     <p class="lead">${S.text}</p>
     <div class="relh">The threads</div>
     <div class="threads">${Object.entries(D.threads).map(([k, t]) => `<button class="thread" data-thread="${k}"><b>${t.name}</b><span>${t.text}</span></button>`).join('')}</div>
+    <div class="relh">Rhythms and timeframes</div>
+    <ol class="rhythms">${(S.rhythms || []).map(([x, y]) => `<li><b>${x}</b><span>${y}</span></li>`).join('')}</ol>
     <div class="relh">Two ways to read it</div>
-    ${Object.values(D.themes).map(t => `<div class="theme"><small>${t.name}</small><b>${t.head}</b><p>${t.body}</p><p class="q">${t.q}</p></div>`).join('')}`;
+    ${Object.values(D.themes).map(t => `<div class="theme"><small>${t.name}</small><b>${t.head}</b><p>${t.body}</p><p class="q">${t.q}</p></div>`).join('')}
+    <div class="relh">Questions for further research</div>
+    <ul class="questions">${(S.questions || []).map(q => `<li>${q}</li>`).join('')}</ul>`;
   bind();
   setPins(null, null); showPath(null);
   fly({ center: [150, 18], zoom: mobile() ? 0.9 : 1.8, pitch: 0, bearing: 0, duration: long ? 3600 : 2000, curve: 1.4 }, true);
@@ -374,7 +379,7 @@ $('threadList').innerHTML = `<li><button data-t="ALL" aria-pressed="true">All co
   `<li><button data-t="NONE" aria-pressed="false">Hide connections</button></li>`;
 $('threadList').querySelectorAll('button').forEach(b => b.onclick = () => setThread(b.dataset.t));
 $('legendToggle').onclick = () => { const c = $('legend').classList.toggle('collapsed'); $('legendToggle').setAttribute('aria-expanded', String(!c)); };
-$('srcList').innerHTML = D.sources.map(([t, u]) => `<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join('');
+$('srcList').innerHTML = D.sources.map(([t, u]) => u ? `<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>` : `<li>${t}</li>`).join('');
 $('bSources').onclick = () => $('modal').classList.add('on');
 $('mClose').onclick = () => $('modal').classList.remove('on');
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) $('modal').classList.remove('on'); });

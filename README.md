@@ -15,7 +15,7 @@ Pin colours show the six dimensions of the assignment (histories, geographies, i
 
 ## How to use it
 
-Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **See it from above** to fly down to the real satellite view.
+Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, use **See it from above** to fly down to the satellite view, or open the exact spot in **Google Earth 3D** or **Street View** (new tab).
 
 Pins marked *representative place* show relations that are not tied to one exact spot.
 
@@ -26,4 +26,4 @@ Pins marked *representative place* show relations that are not tied to one exact
 
 ## Tech
 
-Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) with globe projection; satellite imagery and labels © Esri, Maxar, Earthstar Geographics. All content is in `data.js`.
+Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) 5.24 with globe projection and 3D terrain. Satellite imagery and labels © Esri, Maxar, Earthstar Geographics; elevation from AWS Terrain Tiles; 3D buildings from OpenStreetMap via OpenFreeMap. All content is in `data.js`.

@@ -5,13 +5,13 @@ window.KEI = {
   views: {
     hirakata: { tab: 'Hirakata', jp: '枚方', title: 'Hirakata: the street',
       intro: 'Where I meet the kei car every day. Here the car is just part of the street, but each pin shows a system behind it: city taxes, trains, shopping, narrow lanes, home charging.',
-      camera: { center: [135.658, 34.832], zoom: 13.0, pitch: 40, bearing: -12 }, mobileZoom: 11.8 },
+      camera: { center: [135.656, 34.826], zoom: 13.6, pitch: 58, bearing: -25 }, mobileZoom: 11.8 },
     kansai: { tab: 'Kansai', jp: '関西', title: 'Kansai: the region',
       intro: 'One step out from Hirakata. The kei cars on Hirakata’s streets are built within an hour or two of it, leave through the Port of Osaka, and keep farms and small towns running further south in Wakayama.',
-      camera: { center: [135.85, 34.42], zoom: 7.6, pitch: 25, bearing: 0 }, mobileZoom: 6.7 },
+      camera: { center: [135.85, 34.30], zoom: 7.7, pitch: 52, bearing: -10 }, mobileZoom: 6.7 },
     japan: { tab: 'Japan', jp: '日本', title: 'Japan: the nation',
       intro: 'Zoom out and the kei car becomes national. Laws are written in Tokyo, the first kei were built in Shizuoka and Gunma, Hijet trucks come from Kyushu, and in shrinking rural towns the kei is often the only way to get around.',
-      camera: { center: [138.4, 36.9], zoom: 4.85, pitch: 0, bearing: 0 }, mobileZoom: 3.9 },
+      camera: { center: [138.4, 36.2], zoom: 4.9, pitch: 40, bearing: 0 }, mobileZoom: 3.9 },
     world: { tab: 'World', jp: '世界', title: 'World: the planet',
       intro: 'Zoom out again and the kei leaves Japan. Its design became India’s people’s car, old kei trucks fight for road rights in the US, a Chinese carmaker now builds kei for Japan, and electric kei depend on mines on other continents.',
       camera: { center: [160, 15], zoom: 2.0, pitch: 0, bearing: 0 }, mobileZoom: 0.9 }

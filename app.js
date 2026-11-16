@@ -17,16 +17,29 @@ const style = {
       tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
       attribution: 'Imagery © <a href="https://www.esri.com/">Esri</a>, Maxar, Earthstar Geographics' },
     lbl: { type: 'raster', tileSize: 256, maxzoom: 19,
-      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'] }
+      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'] },
+    // Elevation (AWS Terrain Tiles, public, no key) for real 3D relief
+    dem: { type: 'raster-dem', encoding: 'terrarium', tileSize: 256, maxzoom: 14,
+      tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],
+      attribution: 'Elevation: <a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain Tiles</a>' },
+    // OpenStreetMap buildings (OpenFreeMap) for 3D blocks at street scale
+    omt: { type: 'vector', url: 'https://tiles.openfreemap.org/planet',
+      attribution: '<a href="https://openfreemap.org">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }
   },
+  terrain: { source: 'dem', exaggeration: 1.6 },
   layers: [
     { id: 'bg', type: 'background', paint: { 'background-color': '#05070d' } },
     { id: 'sat', type: 'raster', source: 'sat' },
+    { id: 'buildings', type: 'fill-extrusion', source: 'omt', 'source-layer': 'building', minzoom: 13.5,
+      paint: { 'fill-extrusion-color': '#e9e4da',
+        'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 8],
+        'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
+        'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.5, 0, 15, 0.7] } },
     { id: 'lbl', type: 'raster', source: 'lbl', paint: { 'raster-opacity': 0.95 } }
   ]
 };
-const map = new maplibregl.Map({
-  container: 'map', style, center: D.views.world.camera.center, zoom: 1.2, maxPitch: 70,
+const map = window._map = new maplibregl.Map({
+  container: 'map', style, center: D.views.world.camera.center, zoom: 1.2, maxPitch: 60,
   attributionControl: { compact: true }
 });
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
@@ -118,8 +131,25 @@ function setView(v, duration = 3000) {
   if (mobile()) cam.zoom = V.mobileZoom;
   map.flyTo({ ...cam, duration, essential: true,
     padding: mobile() ? { top: 0, bottom: innerHeight * 0.35, left: 0, right: 0 } : { left: 400, top: 60, right: 0, bottom: 0 } });
+  settleAfterMove();
+}
+// After a long flight with 3D terrain, nudge the camera once so terrain tiles refresh.
+function settleAfterMove() {
+  map.once('moveend', () => setTimeout(() => { map.jumpTo({ bearing: map.getBearing() + 0.01 }); map.triggerRepaint(); }, 250));
 }
 function viewFromHash() { const h = location.hash.slice(1); return ORDER.includes(h) ? h : null; }
+
+/* ---------- Google Earth / Street View links (open in a new tab; no API key needed) ---------- */
+const NO_STREET = new Set(['atacama', 'greenbushes', 'sulawesi', 'kolwezi', 'malaysia']);
+function earthUrl(p) {
+  const [lon, lat] = p.coord;
+  const dist = p.view === 'hirakata' ? 700 : p.view === 'world' ? 6000 : 2500;
+  return `https://earth.google.com/web/@${lat},${lon},50a,${dist}d,35y,0h,55t,0r`;
+}
+function streetUrl(p) {
+  const [lon, lat] = p.coord;
+  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lon}`;
+}
 
 /* ---------- place popup ---------- */
 const popup = new maplibregl.Popup({ maxWidth: '360px', offset: 18, closeButton: true, focusAfterOpen: false });
@@ -143,13 +173,17 @@ function openPlace(id, pan) {
     <p>${p.text}</p>
     ${p.anchor ? '<p class="note">Representative place: this relation is not tied to one exact spot.</p>' : ''}
     ${rel ? `<div class="relh">Connected to</div>${rel}` : ''}
-    <button class="zoom" data-zoom="${id}">🔍 See it from above</button></div>`;
+    <button class="zoom" data-zoom="${id}">🔍 See it from above</button>
+    <div class="ext">
+      <a href="${earthUrl(p)}" target="_blank" rel="noopener">🌏 Google Earth 3D</a>
+      ${NO_STREET.has(p.id) ? '' : `<a href="${streetUrl(p)}" target="_blank" rel="noopener">🚶 Street View</a>`}
+    </div></div>`;
   setTimeout(() => {
     popup.setLngLat(p.coord).setHTML(html).addTo(map);
     const el = popup.getElement();
     el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => openPlace(b.dataset.go, true));
-    el.querySelector('[data-zoom]').onclick = () => map.flyTo({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.2, pitch: 50,
-      bearing: map.getBearing(), duration: 2600, essential: true });
+    el.querySelector('[data-zoom]').onclick = () => { map.flyTo({ center: p.coord, zoom: p.view === 'world' ? 12 : 16.2, pitch: 58,
+      bearing: map.getBearing(), duration: 2600, essential: true }); settleAfterMove(); };
   }, p.view !== current ? 2300 : 0);
 }
 

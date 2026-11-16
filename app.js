@@ -139,18 +139,6 @@ function settleAfterMove() {
 }
 function viewFromHash() { const h = location.hash.slice(1); return ORDER.includes(h) ? h : null; }
 
-/* ---------- Google Earth / Street View links (open in a new tab; no API key needed) ---------- */
-const NO_STREET = new Set(['atacama', 'greenbushes', 'sulawesi', 'kolwezi', 'malaysia']);
-function earthUrl(p) {
-  const [lon, lat] = p.coord;
-  const dist = p.view === 'hirakata' ? 700 : p.view === 'world' ? 6000 : 2500;
-  return `https://earth.google.com/web/@${lat},${lon},50a,${dist}d,35y,0h,55t,0r`;
-}
-function streetUrl(p) {
-  const [lon, lat] = p.coord;
-  return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lon}`;
-}
-
 /* ---------- place popup ---------- */
 const popup = new maplibregl.Popup({ maxWidth: '360px', offset: 18, closeButton: true, focusAfterOpen: false });
 function openPlace(id, pan) {
@@ -173,11 +161,7 @@ function openPlace(id, pan) {
     <p>${p.text}</p>
     ${p.anchor ? '<p class="note">Representative place: this relation is not tied to one exact spot.</p>' : ''}
     ${rel ? `<div class="relh">Connected to</div>${rel}` : ''}
-    <button class="zoom" data-zoom="${id}">🔍 See it from above</button>
-    <div class="ext">
-      <a href="${earthUrl(p)}" target="_blank" rel="noopener">🌏 Google Earth 3D</a>
-      ${NO_STREET.has(p.id) ? '' : `<a href="${streetUrl(p)}" target="_blank" rel="noopener">🚶 Street View</a>`}
-    </div></div>`;
+    <button class="zoom" data-zoom="${id}">🔍 See it from above</button></div>`;
   setTimeout(() => {
     popup.setLngLat(p.coord).setHTML(html).addTo(map);
     const el = popup.getElement();

@@ -15,7 +15,7 @@ Pin colours show the six dimensions of the assignment (histories, geographies, i
 
 ## How to use it
 
-Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, use **See it from above** to fly down to the satellite view, or open the exact spot in **Google Earth 3D** or **Street View** (new tab).
+Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **See it from above** to fly down into the 3D satellite view.
 
 Pins marked *representative place* show relations that are not tied to one exact spot.
 

@@ -91,10 +91,6 @@ button{cursor:pointer}
 .zoom{margin-top:10px;width:100%;min-height:40px;border:none;border-radius:8px;background:var(--ink);color:#fff;font-weight:600;font-size:13px}
 .zoom:hover,.zoom:focus-visible{background:#2d3340;outline:none}
 
-.ext{display:flex;gap:6px;margin-top:6px}
-.ext a{flex:1;display:flex;align-items:center;justify-content:center;min-height:38px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);text-decoration:none;font-size:12px;font-weight:600}
-.ext a:hover,.ext a:focus-visible{border-color:var(--ink);outline:none}
-
 /* modal */
 #modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(5,8,15,.6);z-index:10;padding:20px}
 #modal.on{display:flex}

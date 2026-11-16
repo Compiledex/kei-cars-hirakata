@@ -4,31 +4,26 @@
 
 Assignment 3 for my ethnography class: a visual map of the *relations of relations* around one infrastructure, the kei car (軽自動車), Japan's smallest legal class of car, as I encountered it in Hirakata, Osaka.
 
-The map follows the kei car across:
+The map moves through **four scales**, from small to large:
 
-- **histories and geographies**: the 1949 law that created the class, the factories nearby in Kansai, depopulating villages, US states debating imported kei trucks
-- **infrastructures and social relations**: tax, parking rules, gas stations, chargers; households, farmers, factory workers, enthusiasts abroad
-- **human and environmental realities**: aging drivers, affordability, safety risk; fuel, batteries, mines and second lives
+1. **Hirakata (枚方)**, the street: city hall, the station, Kuzuha Mall, narrow lanes, home charging
+2. **Kansai (関西)**, the region: Daihatsu's headquarters and plants, Honda Suzuka, the Port of Osaka, farms and gas stations in Wakayama
+3. **Japan (日本)**, the nation: the ministries in Tokyo, the first kei factories, Daihatsu Kyushu, Mizushima, depopulating towns from Shimane to Hokkaido
+4. **World (世界)**, the planet: India's Maruti 800, BYD in Shenzhen, kei-truck fights in US states, lithium, nickel and cobalt mines
 
-Markers are relations. The animated lines are four **threads** that link relations to each other across places and scales:
-
-| Thread | What it traces |
-|---|---|
-| State-made smallness | How a postwar rule still shapes streets and budgets |
-| Depopulation | Kei as the replacement for vanishing buses, and what happens when pumps and drivers disappear |
-| Carbon & energy | Fuel-saving kei, closing gas stations, the electric kei and the mines behind it |
-| Circulation & afterlives | Production in Kansai, the Daihatsu scandal, export and second lives abroad |
+Pin colours show the six dimensions of the assignment (histories, geographies, infrastructures, social relations, human and environmental realities). Dashed lines are the **relations of relations**: five threads that link places across scales. Pick one under *Legend & connections* to highlight it.
 
 ## How to use it
 
-Use **Next →** (or the arrow keys) to go through the 13 chapters, which move from the street up to the planet. Click any marker, line or chip to open it. In **Layers** you can focus one thread or hide a dimension.
+Click the scale tabs at the top, or **Zoom out to …** in the side panel (the arrow keys also work). Click any pin or list item to read about it, follow its connections, or use **See it from above** to fly down to the real satellite view.
 
-Some relations (a law, a tax rate) are not tied to one spot. These are pinned to a representative place and labelled **ANCHOR**.
+Pins marked *representative place* show relations that are not tied to one exact spot.
 
-## Adding the field photo
+## Adding photos
 
-Put the photo at `assets/kei.jpg` and it will appear in chapter 2.
+- `assets/kei.jpg` appears on the kei car pin.
+- `assets/photos/<id>.jpg` appears on any other pin (ids are in `data.js`, e.g. `assets/photos/cityhall.jpg`).
 
 ## Tech
 
-Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) with globe projection and 3D buildings, tiles from [OpenFreeMap](https://openfreemap.org/), map data © OpenStreetMap contributors. All content is in `data.js`.
+Plain HTML/CSS/JS with no build step. [MapLibre GL JS](https://maplibre.org/) with globe projection; satellite imagery and labels © Esri, Maxar, Earthstar Geographics. All content is in `data.js`.

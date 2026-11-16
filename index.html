@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kei Cars in Hirakata — Relations of Relations</title>
+<meta name="description" content="An interactive map following the kei car from a street in Hirakata to factories, ministries, villages, ports and mines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Noto+Sans+JP:wght@700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map" aria-label="Interactive map of kei car relations"></div>
+
+<header id="brand">
+  <span class="plate" aria-hidden="true">軽</span>
+  <div><div class="kick">ASSIGNMENT 3</div><h1>Kei cars in Hirakata: relations of relations</h1></div>
+</header>
+
+<section id="layers" aria-label="Map layers">
+  <button id="layersToggle" class="btn small" aria-expanded="true">Layers</button>
+  <div id="layersBody">
+    <div class="kick">THREADS · RELATIONS OF RELATIONS</div>
+    <div id="threadList"></div>
+    <div class="kick" style="margin-top:12px">DIMENSIONS</div>
+    <div id="catList"></div>
+    <button id="bSources" class="btn small" style="margin-top:12px;width:100%">Sources</button>
+  </div>
+</section>
+
+<section id="story" aria-live="polite">
+  <div id="storyBody"></div>
+  <div class="nav">
+    <button id="prev" class="btn" aria-label="Previous chapter">←</button>
+    <div id="dots" role="tablist" aria-label="Chapters"></div>
+    <button id="next" class="btn primary">Next →</button>
+  </div>
+</section>
+
+<aside id="panel" aria-live="polite">
+  <button id="pClose" class="close" aria-label="Close details">×</button>
+  <div id="pBody"></div>
+</aside>
+
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="srcTitle">
+  <div class="box">
+    <button id="mClose" class="close" aria-label="Close sources">×</button>
+    <h2 id="srcTitle">Sources</h2>
+    <p class="muted">Some relations, such as a law or a tax rate, are not tied to one spot. These are pinned to a representative place and labelled “anchor”.</p>
+    <ul id="srcList"></ul>
+  </div>
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
